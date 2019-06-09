@@ -4,7 +4,7 @@ function buildPlot() {
 
   d3.json(url).then(function(response) {
 
-    console.log(response[0]);
+    console.log(response);
 
     var myMap = L.map("map", {
       center: [43.6532, -79.3832],
@@ -24,8 +24,11 @@ function buildPlot() {
     for (data in response){
         var marker = L.marker(response[data].coords, {
           title: response[data].address
-        }).addTo(myMap);
+        }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +cities[i].date_of_infraction +"</h3><hr><h3>" +cities[i].infraction_code +"</h3><hr><h3>" +cities[i].infraction_description +"</h3><hr><h3>" +cities[i].set_fine_amount +"</h3><hr><h3>" +cities[i].time_of_infraction +"</h3>").addTo(myMap);
     }
+
+
+
 
     var layout = {
       scope: "usa",
@@ -47,7 +50,7 @@ function buildPlot() {
       }
     };
 
-    Plotly.newPlot("plot", data, layout);
+    Plotly.newPlot("plot", response, layout);
   });
 }
 
