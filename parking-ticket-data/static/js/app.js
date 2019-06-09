@@ -4,31 +4,28 @@ function buildPlot() {
 
   d3.json(url).then(function(response) {
 
-    console.log(response);
-
-    var data = response;
+    console.log(response[0]);
 
     var myMap = L.map("map", {
-      center: [45.52, -122.67],
-      zoom: 13
+      center: [43.6532, -79.3832],
+      zoom: 12
     });
 
-//    L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-//      attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-//      maxZoom: 18,
-//      id: "mapbox.streets",
-//      accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
-//    }).addTo(myMap);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(myMap);
-
-    var marker = L.marker([45.52, -122.67], {
-      title: "My First Marker"
+    L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+      attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+      maxZoom: 18,
+      id: "mapbox.streets",
+      accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
     }).addTo(myMap);
 
-//    marker.bindPopup("Hello There!");
+
+    var data = '';
+
+    for (data in response){
+        var marker = L.marker(response[data].coords, {
+          title: response[data].address
+        }).addTo(myMap);
+    }
 
     var layout = {
       scope: "usa",

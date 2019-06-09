@@ -8,10 +8,8 @@ from flask import (
     redirect,
     Markup
 )
-import json
 import re
 import pandas as pd
-import numpy as np
 from geopy.geocoders import Nominatim
 from flask_sqlalchemy import SQLAlchemy
 
@@ -59,6 +57,7 @@ def load_data():
         clean_locations = list(dict.fromkeys(clean_locations))
         df = pd.DataFrame({'location2': clean_locations})
         clean_df = pd.merge(tickets_2015_df, df, how="right", on='location2')
+
         limit = 5
         i = 0
 
@@ -67,7 +66,7 @@ def load_data():
                 i = i + 1
                 clean_df1 = clean_df.iloc[i]
                 geolocator = Nominatim(user_agent="parking_ticket_data")
-                location = geolocator.geocode(clean_df1['location2'])
+                location = geolocator.geocode(clean_df1['location2'] + ' Toronto')
 
                 parking_tickets = ParkingTickets(
                     date_of_infraction=clean_df1['date_of_infraction'],
@@ -88,7 +87,7 @@ def load_data():
     except TypeError as e:
         print(e)
 
-    return render_template("form.html")
+    return render_template("index.html")
 
 
 @app.route("/send", methods=["GET", "POST"])
@@ -107,8 +106,7 @@ def data():
 
         for result in results:
             parking_object = {
-                "lat": result[1],
-                "lon": result[2],
+                "coords": [result[1], result[2]],
                 "address": result[0],
                 "hoverinfo": "text",
                 "marker": {
@@ -122,8 +120,6 @@ def data():
             parking_data.append(parking_object)
 
         return jsonify(parking_data)
-
-        # return render_template("index.html", allParkingData=jsonify(parking_data))
     except TypeError as e:
         print(e)
 
