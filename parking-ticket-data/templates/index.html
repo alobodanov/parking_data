@@ -5,7 +5,8 @@
     <title>Basic Map</title>
 
     <!-- Leaflet CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
     <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
             integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
@@ -17,9 +18,42 @@
 
 <body>
 <!-- The div where we will inject our map -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="logo" style="width:40px;">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/api/get/data">Data</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link 3</a>
+        </li>
+    </ul>
+</nav>
+<div class="controls">
+    <form class="form">
+  <div class="form-group">
+    <label for="formGroupExampleInput">Example label</label>
+    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+  </div>
+  <div class="form-group">
+    <label for="formGroupExampleInput2">Another label</label>
+    <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input">
+  </div>
+</form>
+</div>
+
 <div id="map"></div>
 <div id="plot"></div>
 
+
+<footer class="footer">
+  <div class="container">
+      <img src="{{ url_for('static', filename='img/GitHub-Mark-Light-64px.png') }}" alt="logo" style="width:40px;">
+  </div>
+</footer>
 </body>
 </html>
 
