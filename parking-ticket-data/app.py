@@ -67,6 +67,8 @@ for i in range(len(clean_df)):
         "set_fine_amount": clean_df1['set_fine_amount'],
         "time_of_infraction": str(clean_df1['time_of_infraction']),
         "location2": clean_df1['location2'],
+        # "lat": 0,
+        # "long": 0,
         "lat": location.latitude,
         "long": location.longitude
     }
@@ -129,6 +131,19 @@ def filter_search():
     print(filter_data['ticket_type'])
 
     return render_template('index.html')
+
+
+@app.route("/api/description")
+def get_code_description():
+    description = []
+
+    infraction_description = clean_df['infraction_description'].unique()
+
+    jsondf = infraction_description.to_json(orient='index')
+
+    print('--------')
+
+    return infraction_description
 
 
 if __name__ == "__main__":

@@ -55,3 +55,13 @@ html {
     right: 0;
     margin-left: 100px;
 }
+
+.my-plot-style {
+    position: absolute;
+    /* top: 80px; */
+    z-index: 999;
+    bottom: 26px;
+    /* left: 43px; */
+    right: 10px;
+    border: 3px solid #73AD21;
+}

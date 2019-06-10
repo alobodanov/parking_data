@@ -1,4 +1,4 @@
-function buildPlot() {
+function getData() {
 
   var url = "/api/data";
 
@@ -21,10 +21,9 @@ function buildPlot() {
 
     var layout = {
       scope: "usa",
-      title: "Pet Pals",
       showlegend: false,
-      height: 600,
-            // width: 980,
+      width:100,
+      height:100,
       geo: {
         scope: "usa",
         projection: {
@@ -54,4 +53,16 @@ function buildPlot() {
   });
 }
 
-buildPlot();
+
+function getTicketDescription(){
+    var url = '/api/description';
+
+    d3.json(url).then(function(response) {
+        console.log(response);
+
+    });
+
+}
+
+getData();
+getTicketDescription();
