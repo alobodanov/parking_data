@@ -35,25 +35,29 @@
         </li>
     </ul>
 </nav>
+
 <div class="controls">
     <form class="form" action="/api/filter" method = "POST">
         <div class="form-group">
+
             <label for="formGroupExampleInput">Filter Parking Data</label>
-            <select class="form-control" name="ticket_descriptions">
-                <option>Default select</option>
-            </select>
-<!--            <input type="text" class="form-control" id="ticketType" placeholder="Ticket Type" name="ticket_type">-->
+            <input type="text" class="form-control" id="ticketType" placeholder="Ticket Type" name="ticket_type">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Address">
+            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Address" name="address">
+        </div>
+        <div class="form-group">
+                <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Time (HHMM)" name="time">
+        </div>
+        <div class="form-group">
+                <input type="text" class="form-control" id="formGroupExampleInput3" placeholder="Date (YYYMMDD)" name="date">
         </div>
         <button type="Filter" name='filter-option' class="btn btn-primary">Submit</button>
     </form>
 </div>
 
-<div id="map">
-    <div id="plot" class="my-plot-style"></div>
-</div>
+<div id="map"></div>
+<div id="plot"></div>
 
 
 <footer class="footer">
