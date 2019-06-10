@@ -35,37 +35,49 @@
         </li>
     </ul>
 </nav>
-
 <div class="controls">
-    <form class="form" action="/api/filter" method = "POST">
+    <form class="form" action="/api/filter" method="POST">
         <div class="form-group">
-
             <label for="formGroupExampleInput">Filter Parking Data</label>
-            <input type="text" class="form-control" id="ticketType" placeholder="Ticket Type" name="ticket_type">
+            <select id="selDescOpt" class="form-control" name="ticket_type"></select>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Address" name="address">
+            <input type="text" class="form-control" placeholder="Address" name="address">
         </div>
         <div class="form-group">
-                <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Time (HHMM)" name="time">
+            <input type="text" class="form-control" placeholder="Time (HHMM)" name="time">
         </div>
         <div class="form-group">
-                <input type="text" class="form-control" id="formGroupExampleInput3" placeholder="Date (YYYMMDD)" name="date">
+            <input type="text" class="form-control" placeholder="Date (YYYMMDD)" name="date">
         </div>
         <button type="Filter" name='filter-option' class="btn btn-primary">Submit</button>
     </form>
 </div>
 
-<div id="map"></div>
-<div id="plot"></div>
+<div id="map">
+    <div id="plot" class="my-plot-style"></div>
+</div>
 
 
 <footer class="footer">
     <div class="container">
         <a href="https://github.com/alobodanov/parking_data">
-            <img src="{{ url_for('static', filename='img/GitHub-Mark-Light-64px.png') }}" alt="logo" style="width:40px;">
+            <img src="{{ url_for('static', filename='img/GitHub-Mark-Light-64px.png') }}" alt="logo"
+                 style="width:40px;">
         </a>
     </div>
 </footer>
 </body>
 </html>
+
+<script>
+    var selDesc = {{seldesc}};
+
+    var sel = document.getElementById('selDescOpt');
+    for(var i = 0; i < selDesc.length; i++) {
+        var opt = document.createElement('option');
+        opt.innerHTML = selDesc[i];
+        opt.value = selDesc[i];
+        sel.appendChild(opt);
+    }
+</script>

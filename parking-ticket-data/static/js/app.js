@@ -1,3 +1,6 @@
+var height = 400;
+var width = 500;
+
 function getData() {
 
   var url = "/api/data";
@@ -19,24 +22,53 @@ function getData() {
     }).addTo(myMap);
 
 
-    var layout = {
-      scope: "usa",
-      showlegend: false,
-      width:100,
-      height:100,
-      geo: {
-        scope: "usa",
-        projection: {
-          type: "albers usa"
-        },
-        showland: true,
-        landcolor: "rgb(217, 217, 217)",
-        subunitwidth: 1,
-        countrywidth: 1,
-        subunitcolor: "rgb(255,255,255)",
-        countrycolor: "rgb(255,255,255)"
-      }
-    };
+
+    var myPlot = document.getElementById('plot'),
+        d3 = Plotly.d3,
+        N = 16,
+        x = d3.range(N),
+        y = d3.range(N).map( d3.random.normal() ),
+        data = [ { x:x, y:y, type:'scatter',
+                mode:'markers', marker:{size:16} } ],
+        layout = {
+            hovermode:'closest',
+            title:'Parking Data',
+            height: height,
+            width: width,
+         };
+
+    Plotly.newPlot("plot", response, layout);
+
+    myPlot.on('plotly_click', function(data){
+        height = 600;
+        width = 800;
+//        var pts = '';
+//        for(var i=0; i &lt; data.points.length; i++){
+//            pts = 'x = '+data.points[i].x +'\ny = '+
+//                data.points[i].y.toPrecision(4) + '\n\n';
+//        }
+//        alert('Closest point clicked:\n\n'+pts);
+    });
+
+
+//    var layout = {
+//      scope: "usa",
+//      showlegend: false,
+//      height: height,
+//      width: width,
+//      geo: {
+//        scope: "usa",
+//        projection: {
+//          type: "albers usa"
+//        },
+//        showland: true,
+//        landcolor: "rgb(217, 217, 217)",
+//        subunitwidth: 1,
+//        countrywidth: 1,
+//        subunitcolor: "rgb(255,255,255)",
+//        countrycolor: "rgb(255,255,255)"
+//      }
+//    };
 
     var data = '';
 
@@ -48,21 +80,15 @@ function getData() {
     }
 
 
-    Plotly.newPlot("plot", response, layout);
+//    Plotly.newPlot("plot", response, layout);
 
   });
 }
 
 
-function getTicketDescription(){
-    var url = '/api/description';
-
-    d3.json(url).then(function(response) {
-        console.log(response);
-
-    });
-
+function changePlotSize(){
+    this.height = 600;
+    this.width = 800;
 }
 
 getData();
-getTicketDescription();
