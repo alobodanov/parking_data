@@ -139,9 +139,9 @@ def get_code_description():
 
     infraction_description = clean_df['infraction_description'].unique()
 
-    jsondf = infraction_description.to_json(orient='index')
-
-    print('--------')
+    print('----------------')
+    print(infraction_description)
+    print('----------------')
 
     return infraction_description
 
