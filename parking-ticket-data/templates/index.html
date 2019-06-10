@@ -34,15 +34,15 @@
 </nav>
 <div class="controls">
     <form class="form">
-  <div class="form-group">
-    <label for="formGroupExampleInput">Example label</label>
-    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
-  </div>
-  <div class="form-group">
-    <label for="formGroupExampleInput2">Another label</label>
-    <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input">
-  </div>
-</form>
+        <div class="form-group">
+            <label for="formGroupExampleInput">Filter Parking Data</label>
+            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Ticket Type">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Address">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 </div>
 
 <div id="map"></div>
@@ -50,9 +50,11 @@
 
 
 <footer class="footer">
-  <div class="container">
-      <img src="{{ url_for('static', filename='img/GitHub-Mark-Light-64px.png') }}" alt="logo" style="width:40px;">
-  </div>
+    <div class="container">
+        <a href="https://github.com/alobodanov/parking_data">
+            <img src="{{ url_for('static', filename='img/GitHub-Mark-Light-64px.png') }}" alt="logo" style="width:40px;">
+        </a>
+    </div>
 </footer>
 </body>
 </html>

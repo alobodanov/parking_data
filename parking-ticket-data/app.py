@@ -44,6 +44,7 @@ clean_df = pd.merge(tickets_2015_df, df, how="right", on='location2')
 limit = 0
 parking_tickets = {}
 
+i = 0
 
 for i in range(len(clean_df)):
     clean_df1 = clean_df.iloc[i]
