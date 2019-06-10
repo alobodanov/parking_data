@@ -119,5 +119,12 @@ def get_data():
     return jsonify(results)
 
 
+@app.route("/api/filter", methods=['POST', 'GET'])
+def filter_search():
+    if request.method == 'POST':
+        result = request.form
+        print(result)
+
+
 if __name__ == "__main__":
     app.run()
