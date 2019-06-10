@@ -25,10 +25,10 @@ db = SQLAlchemy(app)
 from .models import ParkingTickets
 
 
-@app.before_first_request
-def setup():
-    db.drop_all()
-    db.create_all()
+#@app.before_first_request
+#def setup():
+    #db.drop_all()
+    #db.create_all()
 
 db.drop_all()
 db.create_all()
@@ -126,6 +126,7 @@ def get_data():
 
 @app.route("/api/filter", methods=['POST', 'GET'])
 def filter_search():
+    print(parking_data)
     if request.method != 'POST':
         return render_template('index.html')
 
@@ -138,12 +139,17 @@ def filter_search():
     filtered_final = []
     print(filter_data['ticket_type'])
     print(filter_data['address'])
+    print("------------------")
     # all 4 filters
+    test = db.session.query(ParkingTickets.location2).all()
+    print(test)
     if (filter_data['ticket_type'] and filter_data['address'] and filter_data['time'] and filter_data['date']):
         filter_results = db.session.query(\
-        func.sum(ParkingTickets.set_fine_amount),\
+        func.count(ParkingTickets.set_fine_amount),\
         func.avg(ParkingTickets.set_fine_amount),\
-        ParkingTickets.location2).filter(ParkingTickets.location2==filter_data['address'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.location2==filter_data['address'])\
         .filter(ParkingTickets.date_of_infraction==filter_data['date'])\
         .filter(ParkingTickets.infraction_description==filter_data['ticket_type'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['time'])\
@@ -151,119 +157,149 @@ def filter_search():
     #filter by: ticket_type, address, time
     elif (filter_data['ticket_type'] and filter_data['address'] and filter_data['time']):
         filter_results = db.session.query(\
-        func.sum(ParkingTickets.set_fine_amount),\
+        func.count(ParkingTickets.set_fine_amount),\
         func.avg(ParkingTickets.set_fine_amount),\
-        ParkingTickets.location2).filter(ParkingTickets.location2==filter_data['address'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.location2==filter_data['address'])\
         .filter(ParkingTickets.infraction_description==filter_data['ticket_type'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['time'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: ticket_type, address, date
     elif (filter_data['ticket_type'] and filter_data['address'] and filter_data['time']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.location2==filter_data['address'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.location2==filter_data['address'])\
         .filter(ParkingTickets.infraction_description==filter_data['ticket_type'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['date'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: time, address, date
     elif (filter_data['date'] and filter_data['address'] and filter_data['time']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.location2==filter_data['address'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.location2==filter_data['address'])\
         .filter(ParkingTickets.infraction_description==filter_data['date'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['time'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: time, address
     elif (filter_data['address'] and filter_data['time']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['address'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['address'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['time'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: time, date
     elif (filter_data['date'] and filter_data['time']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['date'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['date'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['time'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: address, date
     elif (filter_data['address'] and filter_data['date']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['date'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['date'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['address'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: time, ticket_type
     elif (filter_data['time'] and filter_data['ticket_type']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['ticket_type'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['ticket_type'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['time'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: ticket_type, date
     elif (filter_data['ticket_type'] and filter_data['date']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['date'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['date'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['ticket_type'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: ticket_type, address
     elif (filter_data['address'] and filter_data['ticket_type']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['address'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['address'])\
         .filter(ParkingTickets.time_of_infraction==filter_data['ticket_type'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: address
     elif (filter_data['address']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['address'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['address'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: ticket_type
     elif (filter_data['ticket_type']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['ticket_type'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['ticket_type'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: time
     elif (filter_data['time']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['time'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['time'])\
         .group_by(ParkingTickets.location2).all()
     #filter by: date
     elif (filter_data['date']):
         filter_results = db.session.query(
-        func.sum(ParkingTickets.set_fine_amount),
+        func.count(ParkingTickets.set_fine_amount),
         func.avg(ParkingTickets.set_fine_amount),
-        ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['date'])\
+        ParkingTickets.location2,\
+        ParkingTickets.lat,\
+        ParkingTickets.long).filter(ParkingTickets.infraction_description==filter_data['date'])\
         .group_by(ParkingTickets.location2).all()
     else:
         return render_template('index.html', data_filtered=Markup(parking_data), seldesc=Markup(list(clean_df['infraction_description'].unique())))
-
+    print("----------------")
+    print(filter_results)
     for result in filter_results:
         filtered_object = {
             "total_fines":result[0],
             "average_fine":result[1],
-            "address":result[2]
+            "address":result[2],
+            "lat":result[3],
+            "long":result[4]
             }
         filtered_final.append(filtered_object)
-
-    return render_template('index.html', data_filtered=Markup(filtered_final), seldesc=Markup(list(clean_df['infraction_description'].unique())))
-
+    print("----------------")
+    print(filtered_final)
+    return jsonify(filtered_final)
+#return render_template('index.html', data_filtered=Markup(filtered_final), seldesc=Markup(list(clean_df['infraction_description'].unique())))
 
 if __name__ == "__main__":
     app.run()

@@ -36,7 +36,7 @@
     </ul>
 </nav>
 <div class="controls">
-    <form class="form" action="/api/filter" method="POST">
+    <form class="form" id="form">
         <div class="form-group">
             <select id="selDescOpt" class="form-control" name="ticket_type"></select>
         </div>
@@ -49,7 +49,7 @@
         <div class="form-group">
             <input type="text" class="form-control" placeholder="Date (YYYMMDD)" name="date">
         </div>
-        <button type="Filter" name='filter-option' class="btn btn-primary">Submit</button>
+        <button id = "submit" type="Filter" onclick="return getFilteredData()" name='filter-option' class="btn btn-primary">Submit</button>
     </form>
 </div>
 
