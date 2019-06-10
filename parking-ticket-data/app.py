@@ -22,6 +22,14 @@ db = SQLAlchemy(app)
 
 from .models import ParkingTickets
 
+
+@app.before_first_request
+def setup():
+    db.drop_all()
+    db.create_all()
+
+db.drop_all()
+db.create_all()
 # Load data into DB
 csv_tickets_1 = "parking-ticket-data/Resources/parking_tickets_2018/parkingData.csv"
 tickets_2015_df = pd.read_csv(csv_tickets_1)
@@ -51,11 +59,12 @@ for i in range(len(clean_df)):
     geolocator = Nominatim(user_agent="parking_ticket_data")
     location = geolocator.geocode(clean_df1['location2'] + ' Toronto')
     parking_tickets = {
-        "date_of_infraction": clean_df1['date_of_infraction'],
-        "infraction_code": clean_df1['infraction_code'],
+        "tag_number_masked": str(clean_df['tag_number_masked']),
+        "date_of_infraction": str(clean_df1['date_of_infraction']),
+        # "infraction_code": clean_df1['infraction_code'],
         "infraction_description": clean_df1['infraction_description'],
         "set_fine_amount": clean_df1['set_fine_amount'],
-        "time_of_infraction": clean_df1['time_of_infraction'],
+        "time_of_infraction": str(clean_df1['time_of_infraction']),
         "location2": clean_df1['location2'],
         "lat": location.latitude,
         "long": location.longitude
@@ -71,11 +80,11 @@ results = db.session.query(
     ParkingTickets.location2,
     ParkingTickets.lat,
     ParkingTickets.long,
-    # ParkingTickets.date_of_infraction,
+    ParkingTickets.date_of_infraction,
     # ParkingTickets.infraction_code,
     ParkingTickets.infraction_description,
     ParkingTickets.set_fine_amount,
-    # ParkingTickets.time_of_infraction
+    ParkingTickets.time_of_infraction
 ).all()
 
 data_all = json.dumps(results)
@@ -85,11 +94,11 @@ for result in results:
     parking_object = {
         "address": result[0],
         "coords": [result[1], result[2]],
-        # "date_of_infraction": result[3],
+        "date_of_infraction": result[3],
         # "infraction_code": result[4],
-        "infraction_description": result[3],
-        "set_fine_amount": result[4],
-        # "time_of_infraction": result[7]
+        "infraction_description": result[4],
+        "set_fine_amount": result[5],
+        "time_of_infraction": result[6]
     }
     parking_data.append(parking_object)
 
@@ -98,11 +107,6 @@ for result in results:
 def data():
     return json.dumps(parking_data)
 
-
-@app.before_first_request
-def setup():
-    db.drop_all()
-    db.create_all()
 
 # create route that renders index.html template
 @app.route("/")

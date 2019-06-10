@@ -5,7 +5,7 @@ class ParkingTickets(db.Model):
     __tablename__ = 'parking_tickets'
 
     id = db.Column(db.Integer, primary_key=True)
-    # tag_number_masked = db.Column(db.String(50), nullable=True)
+    tag_number_masked = db.Column(db.String(50), nullable=True)
     date_of_infraction = db.Column(db.String(50), nullable=True)
     infraction_code = db.Column(db.String(50), nullable=True)
     infraction_description = db.Column(db.String(50), nullable=True)
