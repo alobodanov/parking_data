@@ -58,6 +58,7 @@ for i in range(len(clean_df)):
     clean_df1 = clean_df.iloc[i]
     geolocator = Nominatim(user_agent="parking_ticket_data")
     location = geolocator.geocode(clean_df1['location2'] + ' Toronto')
+
     parking_tickets = {
         "tag_number_masked": str(clean_df['tag_number_masked']),
         "date_of_infraction": str(clean_df1['date_of_infraction']),
@@ -121,9 +122,13 @@ def get_data():
 
 @app.route("/api/filter", methods=['POST', 'GET'])
 def filter_search():
-    if request.method == 'POST':
-        result = request.form
-        print(result)
+    if request.method != 'POST':
+        return render_template('index.html')
+
+    filter_data = request.form
+    print(filter_data['ticket_type'])
+
+    return render_template('index.html')
 
 
 if __name__ == "__main__":
