@@ -252,7 +252,7 @@ def filter_search():
         ParkingTickets.location2).filter(ParkingTickets.infraction_description==filter_data['date'])\
         .group_by(ParkingTickets.location2).all()
     else:
-        return render_template('index.html', data_filtered=Markup(parking_data))
+        return render_template('index.html', data_filtered=Markup(parking_data), seldesc=Markup(list(clean_df['infraction_description'].unique())))
 
     for result in filter_results:
         filtered_object = {
@@ -262,7 +262,7 @@ def filter_search():
             }
         filtered_final.append(filtered_object)
 
-    return render_template('index.html', data_filtered=Markup(filtered_final))
+    return render_template('index.html', data_filtered=Markup(filtered_final), seldesc=Markup(list(clean_df['infraction_description'].unique())))
 
 
 if __name__ == "__main__":
