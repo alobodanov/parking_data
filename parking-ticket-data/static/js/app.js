@@ -1,5 +1,7 @@
 var height = 300;
 var width = 500;
+var marker = '';
+//var layout = '';
 
 function createMap() {
 
@@ -19,7 +21,31 @@ function createMap() {
     });
 }
 
-var marker = '';
+function createPlotly() {
+    return document.getElementById('plot'),
+            d3 = Plotly.d3,
+            N = 16,
+            x = d3.range(N),
+            y = d3.range(N).map( d3.random.normal() ),
+            data = [ { x:x, y:y, type:'scatter',
+                    mode:'markers', marker:{size:16} } ],
+            layout = {
+                hovermode:'closest',
+                title:'Parking Data',
+                height: height,
+                width: width,
+                responsive:true,
+                margin: {
+                    l: 30,
+                    r: 0,
+                    b: 30,
+                    t: 70,
+                    pad: 10
+                },
+                paper_bgcolor:'rgba(171, 205, 239, 0.8)',
+                plot_bgcolor:'rgba(171, 205, 239, 0.8)'
+            };
+}
 
 function getData() {
   var url = "/api/data";
@@ -48,8 +74,8 @@ function getData() {
             height: height,
             width: width,
             margin: {
-                l: 20,
-                r: 20,
+                l: 30,
+                r: 0,
                 b: 30,
                 t: 70,
                 pad: 10
@@ -57,9 +83,12 @@ function getData() {
             paper_bgcolor:'rgba(171, 205, 239, 0.8)',
             plot_bgcolor:'rgba(171, 205, 239, 0.8)'
          };
+
+//    plot = createPlotly();
+
     Plotly.newPlot("plot", response, layout);
 
-    myPlot.on('click', function(data){
+    plot.on('click', function(data){
         height = 600;
         width = 800;
     });
@@ -106,8 +135,8 @@ function getFilteredData() {
         var myPlot = document.getElementById('plot'),
             d3 = Plotly.d3,
             N = 16,
-            x = response[data].address,
-            y = response[data].total_fines,
+            x = response.length,
+            y = response.length,
             data = [ {
                 x:x,
                 y:y,
@@ -121,7 +150,7 @@ function getFilteredData() {
                 width: width,
                 margin: {
                     l: 20,
-                    r: 20,
+                    r: 30,
                     b: 30,
                     t: 70,
                     pad: 10

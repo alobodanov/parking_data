@@ -107,7 +107,14 @@ def filter_search():
         filter_data = json.loads(request.data)
         check = 0
 
-        filter_results = db.session.query(func.count(ParkingTickets.set_fine_amount), func.avg(ParkingTickets.set_fine_amount),ParkingTickets.location2, ParkingTickets.lat, ParkingTickets.long)
+        filter_results = db.session.query(
+            func.count(ParkingTickets.set_fine_amount),
+            func.avg(ParkingTickets.set_fine_amount),
+            ParkingTickets.location2,
+            ParkingTickets.lat,
+            ParkingTickets.long,
+            ParkingTickets.infraction_description
+        )
         if filter_data["date"]:
             check = 1
             filter_results = filter_results.filter(ParkingTickets.date_of_infraction == filter_data["date"])
@@ -117,26 +124,46 @@ def filter_search():
         if filter_data["address"]:
             check = 1
             filter_results = filter_results.filter(ParkingTickets.location2 == filter_data["address"])
-        if filter_data["ticket_type"] and filter_data["ticket_type"]!="":
+        if filter_data["ticket_type"] and filter_data["ticket_type"] != "":
             check = 1
             filter_results = filter_results.filter(ParkingTickets.infraction_description == filter_data["ticket_type"])
         if check != 0:
-            filter_results = filter_results.group_by(ParkingTickets.location2).all()
+            # filter_results = filter_results.group_by(ParkingTickets.location2).all()
+            filter_results = filter_results.group_by(ParkingTickets.infraction_description).group_by(
+                ParkingTickets.location2).all()
         else:
             return json.dumps(parking_data)
 
+        # print(filter_results)
         filtered_final = []
+        address_data = []
+        address_tmp_data = []
+        infraction_description_data = []
+        inner_array = []
+
+        # print(filter_results)
 
         for result in filter_results:
-            filtered_object = {
-                "total_fines": result[0],
-                "average_fine": result[1],
+            if result[2] in address_tmp_data:
+                print('---')
+            else:
+                inner_data = {
+                        "total_fines": result[0],
+                        "average_fine": result[1],
+                        "infraction_description": result[5]
+                    }
+                inner_array.append(inner_data)
+                address_tmp_data.append(result[2])
+            address_data.append({
                 "address": result[2],
-                "coords": [result[3],result[4]]
-            }
-            filtered_final.append(filtered_object)
+                "coords": [result[3], result[4]],
+                "data": {
+                    "total_fines": result[0],
+                    "average_fine": result[1],
+                    "infraction_description": result[5]
+                }})
 
-        return jsonify(filtered_final)
+        return jsonify(address_data)
 
 
 if __name__ == "__main__":
