@@ -117,7 +117,7 @@ def filter_search():
         if filter_data["address"]:
             check = 1
             filter_results = filter_results.filter(ParkingTickets.location2 == filter_data["address"])
-        if filter_data["ticket_type"]:
+        if filter_data["ticket_type"] and filter_data["ticket_type"]!="":
             check = 1
             filter_results = filter_results.filter(ParkingTickets.infraction_description == filter_data["ticket_type"])
         if check != 0:

@@ -88,9 +88,28 @@ function getFilteredData() {
         console.log("marker")
         console.log(marker);
         console.log("---------")
+        try {
+            if (response[data].date_of_infraction){
+                 for (data in response){
+                    marker = L.marker(response[data].coords, {
+                         title: response[data].address
+                     }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
+                }
+                    } 
+        }
+         catch (error) {
+            if (error.name === 'TypeError')
+          {
+                for (data in response){
+                    marker = L.marker(response[data].coords, {
+                        title: response[data].address
+                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].total_fines +"</h3><hr><h3>" +response[data].average_fine).addTo(map);
+                }
+            }
+          }
 
 //        if (response[data].date_of_infraction){
-            for (data in response){
+       /*      for (data in response){
                 console.log("data in response")
                 console.log(data)
                 console.log("response[data].total_fines")
@@ -99,15 +118,15 @@ function getFilteredData() {
                 marker = L.marker(response[data].coords, {
                   title: response[data].address
                 }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>Total Fines: " +response[data].total_fines +"</h3><hr><h3>Average Fine: " +response[data].average_fine+"</h3>").addTo(map);
-            }
+            } */
 
             var myPlot = document.getElementById('plot'),
                 d3 = Plotly.d3,
                 N = 16,
-                x = d3.range(N),
-                y = d3.range(N).map( d3.random.normal() ),
+                x = response[data].address,
+                y = response[data].total_fines,
                 data = [ { x:x, y:y, type:'scatter',
-                        mode:'markers', marker:{size:16} } ],
+                        mode:'markers', marker:(response[data].total_fines*response[data].average_fines) } ],
                 layout = {
                     hovermode:'closest',
                     title:'Parking Data',
@@ -123,8 +142,10 @@ function getFilteredData() {
             });
 
             var data = '';
-
-//            if (response[data].date_of_infraction){
+        })
+        
+        
+ /*    if (typeof response[data].date_of_infraction !== 'undefined'){
                 // for (data in response){
                 //     marker = L.marker(response[data].coords, {
                 //         title: response[data].address
@@ -137,15 +158,15 @@ function getFilteredData() {
 //                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].total_fines +"</h3><hr><h3>" +response[data].average_fine).addTo(map);
 //                }
 //            }
-//        }
+        }
   });
-}
+} */
 
+
+}
 function changePlotSize(){
     this.height = 600;
     this.width = 800;
 }
 
 getData();
-
-
