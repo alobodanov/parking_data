@@ -11,7 +11,6 @@ from flask import (
 import json
 import re
 import pandas as pd
-from geopy.geocoders import Nominatim
 from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy
 from sqlalchemy import func
@@ -31,33 +30,15 @@ from .models import ParkingTickets
 db.drop_all()
 db.create_all()
 # Load data into DB
-csv_tickets_1 = "parking-ticket-data/Resources/parking_tickets_2018/parkingData.csv"
-tickets_2015_df = pd.read_csv(csv_tickets_1)
-locations = list(tickets_2015_df["location2"])
-clean_locations = []
-
-for location in locations:
-    if re.search(r'\d+\w+', location):
-        clean_locations.append(location)
-
-clean_locations1 = clean_locations[:933495]
-clean_locations2 = clean_locations[933495:]
-clean_locations1 = list(dict.fromkeys(clean_locations1))
-clean_locations2 = list(dict.fromkeys(clean_locations2))
-clean_locations = clean_locations1 + clean_locations2
-clean_locations = list(dict.fromkeys(clean_locations))
-df = pd.DataFrame({'location2': clean_locations})
-clean_df = pd.merge(tickets_2015_df, df, how="right", on='location2')
-
-limit = 0
+csv_tickets_1 = "parking-ticket-data/Resources/coords2.csv"
+clean_df = pd.read_csv(csv_tickets_1)
+locations = list(clean_df["location2"])
 parking_tickets = {}
 
 i = 0
 
 for i in range(len(clean_df)):
     clean_df1 = clean_df.iloc[i]
-    geolocator = Nominatim(user_agent="parking_ticket_data")
-    location = geolocator.geocode(clean_df1['location2'] + ' Toronto')
 
     parking_tickets = {
         "tag_number_masked": str(clean_df['tag_number_masked']),
@@ -67,10 +48,8 @@ for i in range(len(clean_df)):
         "set_fine_amount": clean_df1['set_fine_amount'],
         "time_of_infraction": str(clean_df1['time_of_infraction']),
         "location2": clean_df1['location2'],
-        # "lat": 0,
-        # "long": 0,
-        "lat": location.latitude,
-        "long": location.longitude
+        "lat": clean_df1['lat'],
+        "long": clean_df1['lon']
     }
 
     ParkingTickets(**parking_tickets)
@@ -130,19 +109,19 @@ def filter_search():
 
         filter_results = db.session.query(func.count(ParkingTickets.set_fine_amount), func.avg(ParkingTickets.set_fine_amount),ParkingTickets.location2, ParkingTickets.lat, ParkingTickets.long)
         if filter_data["date"]:
-            check=1
+            check = 1
             filter_results = filter_results.filter(ParkingTickets.date_of_infraction == filter_data["date"])
         if filter_data["time"]:
-            check=1
+            check = 1
             filter_results = filter_results.filter(ParkingTickets.time_of_infraction == filter_data["time"])
         if filter_data["address"]:
-            check=1
+            check = 1
             filter_results = filter_results.filter(ParkingTickets.location2 == filter_data["address"])
         if filter_data["ticket_type"]:
-            check=1
+            check = 1
             filter_results = filter_results.filter(ParkingTickets.infraction_description == filter_data["ticket_type"])
 
-        if check!=0:
+        if check != 0:
             filter_results = filter_results.group_by(ParkingTickets.location2).all()
         else:
             return json.dumps(parking_data)
