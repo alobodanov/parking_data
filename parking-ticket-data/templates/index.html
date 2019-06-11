@@ -75,6 +75,12 @@
     var selDesc = {{seldesc}};
 
     var sel = document.getElementById('selDescOpt');
+
+    var optAll = document.createElement('option');
+    optAll.innerHTML = 'All';
+    optAll.value = '';
+    sel.appendChild(optAll);
+
     for(var i = 0; i < selDesc.length; i++) {
         var opt = document.createElement('option');
         opt.innerHTML = selDesc[i];

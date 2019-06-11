@@ -1,18 +1,23 @@
 var height = 300;
 var width = 500;
 
-var map = L.map("map", {
-      center: [43.6532, -79.3832],
-      zoom: 12,
-      layers: [
-          L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-            attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
-            maxZoom: 18,
-            id: "mapbox.streets",
-            accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
-          })
-      ]
-});
+function createMap() {
+
+    document.getElementById('parent').innerHTML = "<div id='map'> <div id='plot' class='my-plot-style'></div>";
+
+    return L.map("map", {
+          center: [43.6532, -79.3832],
+          zoom: 12,
+          layers: [
+              L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+                attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+                maxZoom: 18,
+                id: "mapbox.streets",
+                accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
+              })
+          ]
+    });
+}
 
 var marker = '';
 
@@ -21,6 +26,8 @@ function getData() {
 
   d3.json(url).then(function(response) {
     var data = '';
+
+    var map = createMap();
 
     for (data in response){
         marker = L.marker(response[data].coords, {
@@ -40,6 +47,13 @@ function getData() {
             title:'Parking Data',
             height: height,
             width: width,
+            margin: {
+                l: 20,
+                r: 20,
+                b: 30,
+                t: 70,
+                pad: 10
+            },
             paper_bgcolor:'rgba(171, 205, 239, 0.8)',
             plot_bgcolor:'rgba(171, 205, 239, 0.8)'
          };
@@ -59,19 +73,7 @@ function getFilteredData() {
     var address = document.getElementById('address').value;
     var time = document.getElementById('time').value;
     var date = document.getElementById('date').value;
-    document.getElementById('parent').innerHTML = "<div id='map'> <div id='plot' class='my-plot-style'></div>";
-    var map = new L.map("map", {
-        center: [43.6532, -79.3832],
-        zoom: 12,
-        layers: [
-            L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-              attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
-              maxZoom: 18,
-              id: "mapbox.streets",
-              accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
-            })
-        ]
-  });
+
     d3.json(url, {
         method:"POST",
         header: {
@@ -80,14 +82,8 @@ function getFilteredData() {
         body: JSON.stringify({'ticket_type':ticket_type,'address':address,'time':time,'date':date})
     }).then(function(response) {
 
-        console.log("response")
-        console.log(response);
-        console.log("---------")
+        var map = createMap();
 
-        //map.removeLayer(marker);
-        console.log("marker")
-        console.log(marker);
-        console.log("---------")
         try {
             if (response[data].date_of_infraction){
                  for (data in response){
@@ -95,44 +91,44 @@ function getFilteredData() {
                          title: response[data].address
                      }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
                 }
-                    } 
+            }
         }
          catch (error) {
-            if (error.name === 'TypeError')
-          {
+            if (error.name === 'TypeError'){
                 for (data in response){
                     marker = L.marker(response[data].coords, {
                         title: response[data].address
                     }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3> Number of Fines: " +response[data].total_fines +"</h3><hr><h3>Average Fine Amount: " +response[data].average_fine+"</h3>").addTo(map);
                 }
             }
-          }
+         }
 
-//        if (response[data].date_of_infraction){
-       /*      for (data in response){
-                console.log("data in response")
-                console.log(data)
-                console.log("response[data].total_fines")
-                console.log(response[data].total_fines)
-                console.log("---------")
-                marker = L.marker(response[data].coords, {
-                  title: response[data].address
-                }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>Total Fines: " +response[data].total_fines +"</h3><hr><h3>Average Fine: " +response[data].average_fine+"</h3>").addTo(map);
-            } */
-
-            var myPlot = document.getElementById('plot'),
-                d3 = Plotly.d3,
-                N = 16,
-                x = response[data].address,
-                y = response[data].total_fines,
-                data = [ { x:x, y:y, type:'scatter',
-                        mode:'markers', marker:(response[data].total_fines*response[data].average_fines) } ],
-                layout = {
-                    hovermode:'closest',
-                    title:'Parking Data',
-                    height: height,
-                    width: width,
-                 };
+        var myPlot = document.getElementById('plot'),
+            d3 = Plotly.d3,
+            N = 16,
+            x = response[data].address,
+            y = response[data].total_fines,
+            data = [ {
+                x:x,
+                y:y,
+                type:'scatter',
+                mode:'markers',
+                marker:(response[data].total_fines*response[data].average_fines) } ],
+            layout = {
+                hovermode:'closest',
+                title:'Parking Data',
+                height: height,
+                width: width,
+                margin: {
+                    l: 20,
+                    r: 20,
+                    b: 30,
+                    t: 70,
+                    pad: 10
+                },
+                paper_bgcolor:'rgba(171, 205, 239, 0.8)',
+                plot_bgcolor:'rgba(171, 205, 239, 0.8)'
+             };
 
             Plotly.newPlot("plot", response, layout);
 
@@ -142,28 +138,9 @@ function getFilteredData() {
             });
 
             var data = '';
-        })
-        
-        
- /*    if (typeof response[data].date_of_infraction !== 'undefined'){
-                // for (data in response){
-                //     marker = L.marker(response[data].coords, {
-                //         title: response[data].address
-                //     }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
-                //}
-//            } else {
-//                for (data in response){
-//                    marker = L.marker(response[data].coords, {
-//                        title: response[data].address
-//                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].total_fines +"</h3><hr><h3>" +response[data].average_fine).addTo(map);
-//                }
-//            }
-        }
-  });
-} */
-
-
+    })
 }
+
 function changePlotSize(){
     this.height = 600;
     this.width = 800;
