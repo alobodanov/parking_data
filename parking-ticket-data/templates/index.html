@@ -17,6 +17,7 @@
 
     <!-- API key -->
     <!--<script type="text/javascript" src="config.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
@@ -36,20 +37,21 @@
     </ul>
 </nav>
 <div class="controls">
-    <form class="form" id="form">
+    <form class="form" id="formFields">
         <div class="form-group">
             <select id="selDescOpt" class="form-control" name="ticket_type"></select>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="Address" name="address">
+            <input id="address" type="text" class="form-control" placeholder="Address" name="address">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="Time (HHMM)" name="time">
+            <input id="time" type="text" class="form-control" placeholder="Time (HHMM)" name="time">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="Date (YYYMMDD)" name="date">
+            <input id="date" type="text" class="form-control" placeholder="Date (YYYMMDD)" name="date">
         </div>
-        <button id = "submit" type="Filter" onclick="return getFilteredData()" name='filter-option' class="btn btn-primary">Submit</button>
+        <button type="button" onclick="getFilteredData()" class="btn btn-primary">Submit</button>
+<!--        <button id = "submit" onclick="getFilteredData()" name='filter-option' class="btn btn-primary">Submit</button>-->
     </form>
 </div>
 
