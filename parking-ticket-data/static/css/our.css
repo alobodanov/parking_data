@@ -17,8 +17,14 @@ html {
 }
 
 #map {
-  height: 100%,
-  width: 100%
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+}
+#parent {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 .nav-style {
     padding-left: 69px;

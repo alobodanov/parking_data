@@ -54,11 +54,24 @@ function getData() {
 
 function getFilteredData() {
     var url = "/api/filter";
+    
     var ticket_type = document.getElementById('selDescOpt').value;
     var address = document.getElementById('address').value;
     var time = document.getElementById('time').value;
     var date = document.getElementById('date').value;
-
+    document.getElementById('parent').innerHTML = "<div id='map'> <div id='plot' class='my-plot-style'></div>";
+    var map = new L.map("map", {
+        center: [43.6532, -79.3832],
+        zoom: 12,
+        layers: [
+            L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+              attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+              maxZoom: 18,
+              id: "mapbox.streets",
+              accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
+            })
+        ]
+  });
     d3.json(url, {
         method:"POST",
         header: {
@@ -67,18 +80,25 @@ function getFilteredData() {
         body: JSON.stringify({'ticket_type':ticket_type,'address':address,'time':time,'date':date})
     }).then(function(response) {
 
+        console.log("response")
+        console.log(response);
+        console.log("---------")
 
+        //map.removeLayer(marker);
+        console.log("marker")
         console.log(marker);
-
-        map.removeLayer(marker);
-
-        console.log(marker);
+        console.log("---------")
 
 //        if (response[data].date_of_infraction){
             for (data in response){
+                console.log("data in response")
+                console.log(data)
+                console.log("response[data].total_fines")
+                console.log(response[data].total_fines)
+                console.log("---------")
                 marker = L.marker(response[data].coords, {
                   title: response[data].address
-                }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].date_of_infraction +"</h3><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
+                }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>Total Fines: " +response[data].total_fines +"</h3><hr><h3>Average Fine: " +response[data].average_fine+"</h3>").addTo(map);
             }
 
             var myPlot = document.getElementById('plot'),
@@ -105,11 +125,11 @@ function getFilteredData() {
             var data = '';
 
 //            if (response[data].date_of_infraction){
-                for (data in response){
-                    marker = L.marker(response[data].coords, {
-                        title: response[data].address
-                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
-                }
+                // for (data in response){
+                //     marker = L.marker(response[data].coords, {
+                //         title: response[data].address
+                //     }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
+                //}
 //            } else {
 //                for (data in response){
 //                    marker = L.marker(response[data].coords, {
