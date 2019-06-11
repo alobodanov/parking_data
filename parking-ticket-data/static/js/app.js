@@ -63,7 +63,8 @@ function getFilteredData() {
         },
         body: JSON.stringify({'ticket_type':ticket_type,'address':address,'time':time,'date':date})
     }).then(function(response) {
-        document.getElementById('map').innerHTML = "";
+//        document.getElementById('map').innerHTML = "";
+//        myMap.removeLayer(marker);
         let myMap = L.map("map", {
           center: [43.6532, -79.3832],
           zoom: 12
