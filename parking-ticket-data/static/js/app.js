@@ -103,7 +103,7 @@ function getFilteredData() {
                 for (data in response){
                     marker = L.marker(response[data].coords, {
                         title: response[data].address
-                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].total_fines +"</h3><hr><h3>" +response[data].average_fine).addTo(map);
+                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3> Number of Fines: " +response[data].total_fines +"</h3><hr><h3>Average Fine Amount: " +response[data].average_fine+"</h3>").addTo(map);
                 }
             }
           }
