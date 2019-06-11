@@ -1,28 +1,31 @@
 var height = 300;
 var width = 500;
 
+var map = L.map("map", {
+      center: [43.6532, -79.3832],
+      zoom: 12,
+      layers: [
+          L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+            attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+            maxZoom: 18,
+            id: "mapbox.streets",
+            accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
+          })
+      ]
+});
+
+var marker = '';
+
 function getData() {
   var url = "/api/data";
 
   d3.json(url).then(function(response) {
-    let myMap = L.map("map", {
-      center: [43.6532, -79.3832],
-      zoom: 12
-    });
-
-    L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-      attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
-      maxZoom: 18,
-      id: "mapbox.streets",
-      accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
-    }).addTo(myMap);
-
     var data = '';
 
     for (data in response){
-        var marker = L.marker(response[data].coords, {
+        marker = L.marker(response[data].coords, {
           title: response[data].address
-        }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].date_of_infraction+"</h3><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(myMap);
+        }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].date_of_infraction+"</h3><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
     }
 
     var myPlot = document.getElementById('plot'),
@@ -63,27 +66,19 @@ function getFilteredData() {
         },
         body: JSON.stringify({'ticket_type':ticket_type,'address':address,'time':time,'date':date})
     }).then(function(response) {
-//        document.getElementById('map').innerHTML = "";
-//        myMap.removeLayer(marker);
-        let myMap = L.map("map", {
-          center: [43.6532, -79.3832],
-          zoom: 12
-        });
 
-        L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-          attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
-          maxZoom: 18,
-          id: "mapbox.streets",
-          accessToken: 'pk.eyJ1IjoiYXJ0ZW1sb2IiLCJhIjoiY2llbmZ0MXI1MGM4YnNrbTI0dW94b3ltcCJ9.pHrURjSshpLct5AJ_Nt8MA'
-        }).addTo(myMap);
 
-        myMap.removeLayer(marker);
+        console.log(marker);
 
-        if (response[data].date_of_infraction){
+        map.removeLayer(marker);
+
+        console.log(marker);
+
+//        if (response[data].date_of_infraction){
             for (data in response){
-                var marker = L.marker(response[data].coords, {
+                marker = L.marker(response[data].coords, {
                   title: response[data].address
-                }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].date_of_infraction +"</h3><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(myMap);
+                }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].date_of_infraction +"</h3><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
             }
 
             var myPlot = document.getElementById('plot'),
@@ -109,20 +104,20 @@ function getFilteredData() {
 
             var data = '';
 
-            if (response[data].date_of_infraction){
+//            if (response[data].date_of_infraction){
                 for (data in response){
-                    var marker = L.marker(response[data].coords, {
+                    marker = L.marker(response[data].coords, {
                         title: response[data].address
-                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].date_of_infraction +"</h3><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(myMap);
+                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
                 }
-            } else {
-                for (data in response){
-                    var marker = L.marker(response[data].coords, {
-                        title: response[data].address
-                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].total_fines +"</h3><hr><h3>" +response[data].average_fine).addTo(myMap);
-                }
-            }
-        }
+//            } else {
+//                for (data in response){
+//                    marker = L.marker(response[data].coords, {
+//                        title: response[data].address
+//                    }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].total_fines +"</h3><hr><h3>" +response[data].average_fine).addTo(map);
+//                }
+//            }
+//        }
   });
 }
 

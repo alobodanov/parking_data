@@ -120,7 +120,6 @@ def filter_search():
         if filter_data["ticket_type"]:
             check = 1
             filter_results = filter_results.filter(ParkingTickets.infraction_description == filter_data["ticket_type"])
-
         if check != 0:
             filter_results = filter_results.group_by(ParkingTickets.location2).all()
         else:
