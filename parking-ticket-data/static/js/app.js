@@ -185,22 +185,7 @@ function getFilteredData() {
     
                             })
                         marker.bindPopup(popup_stmt);}
-                    else if(response[data].address!=placeholder_address[data-1] && data<response.length){
-                        console.log("else if3");
-                        console.log(response[data].address);
-                        console.log(response[data].address)
-                        marker.bindPopup(popup_stmt).addTo(map);
-                        placeholder_address.push(response[data].address)
-                        console.log(popup_stmt);
-                        popup_stmt="<h1>" +response[data].address +"</h1>";
-                        console.log(popup_stmt);
-                        trace1.y=response[data].data.fine_amount;
-                        trace1.marker.size=response[data].data.total_fines;
-                        popup_stmt = popup_stmt+"<hr><h2> Ticket Type:" +response[data].data.infraction_description+"</h2><hr><h3> Number of Fines: " +response[data].data.total_fines +"</h3>";
-                        trace1.x=response[data].address;
-                        marker = L.marker(response[data].coords, {
-                        title: response[data].address})
-                    }
+                    
                     else if(response[data].address!=placeholder_address[data-1] && data==response.length-1){
                             console.log("else if4");
                             console.log(response[data].address);
@@ -218,6 +203,22 @@ function getFilteredData() {
                             title: response[data].address
                         });
                         marker.bindPopup(popup_stmt).addTo(map);}
+                        else if(response[data].address!=placeholder_address[data-1] && data<response.length){
+                            console.log("else if3");
+                            console.log(response[data].address);
+                            console.log(response[data].address)
+                            marker.bindPopup(popup_stmt).addTo(map);
+                            placeholder_address.push(response[data].address)
+                            console.log(popup_stmt);
+                            popup_stmt="<h1>" +response[data].address +"</h1>";
+                            console.log(popup_stmt);
+                            trace1.y=response[data].data.fine_amount;
+                            trace1.marker.size=response[data].data.total_fines;
+                            popup_stmt = popup_stmt+"<hr><h2> Ticket Type:" +response[data].data.infraction_description+"</h2><hr><h3> Number of Fines: " +response[data].data.total_fines +"</h3>";
+                            trace1.x=response[data].address;
+                            marker = L.marker(response[data].coords, {
+                            title: response[data].address})
+                        }
                     else{
                         console.log("else")
                         trace1.y=response[data].data.fine_amount;
