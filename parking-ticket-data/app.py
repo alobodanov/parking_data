@@ -75,7 +75,7 @@ parking_data = []
 for result in results:
     parking_object = {
         "address": result[0],
-        "coords": [result[1], result[2]],
+        "coords1": [result[1], result[2]],
         "date_of_infraction": result[3],
         # "infraction_code": result[4],
         "infraction_description": result[4],
@@ -109,7 +109,7 @@ def filter_search():
 
         filter_results = db.session.query(
             func.count(ParkingTickets.set_fine_amount),
-            func.avg(ParkingTickets.set_fine_amount),
+            ParkingTickets.set_fine_amount,
             ParkingTickets.location2,
             ParkingTickets.lat,
             ParkingTickets.long,
@@ -159,7 +159,7 @@ def filter_search():
                 "coords": [result[3], result[4]],
                 "data": {
                     "total_fines": result[0],
-                    "average_fine": result[1],
+                    "fine_amount": result[1],
                     "infraction_description": result[5]
                 }})
 
