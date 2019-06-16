@@ -123,45 +123,44 @@ def filter_search():
             filter_results = filter_results.filter(ParkingTickets.time_of_infraction == filter_data["time"])
         if filter_data["address"]:
             check = 1
-            filter_results = filter_results.filter(ParkingTickets.location2 == filter_data["address"])
+            filter_results = filter_results.filter(ParkingTickets.location2.like("%" + filter_data["address"].upper() + "%"))
         if filter_data["ticket_type"] and filter_data["ticket_type"] != "":
             check = 1
             filter_results = filter_results.filter(ParkingTickets.infraction_description == filter_data["ticket_type"])
         if check != 0:
-            # filter_results = filter_results.group_by(ParkingTickets.location2).all()
             filter_results = filter_results.group_by(ParkingTickets.infraction_description).group_by(
                 ParkingTickets.location2).all()
         else:
             return json.dumps(parking_data)
 
-        # print(filter_results)
-        filtered_final = []
         address_data = []
         address_tmp_data = []
-        infraction_description_data = []
-        inner_array = []
-
-        # print(filter_results)
 
         for result in filter_results:
             if result[2] in address_tmp_data:
-                print('---')
+                for address in address_data:
+                    if result[2] == address['address']:
+                        tmp_obj = address['data']
+                        tmp_obj.append({
+                            "total_fines": result[0],
+                            "fine_amount": result[1],
+                            "infraction_description": result[5]
+                        })
+                        address['data'] = tmp_obj
             else:
-                inner_data = {
+                address_data.append({
+                    "address": result[2],
+                    "coords": [result[3], result[4]],
+                    "data": [{
                         "total_fines": result[0],
-                        "average_fine": result[1],
+                        "fine_amount": result[1],
                         "infraction_description": result[5]
-                    }
-                inner_array.append(inner_data)
+                    }]})
+
+                # inner_array.append(inner_data)
                 address_tmp_data.append(result[2])
-            address_data.append({
-                "address": result[2],
-                "coords": [result[3], result[4]],
-                "data": {
-                    "total_fines": result[0],
-                    "fine_amount": result[1],
-                    "infraction_description": result[5]
-                }})
+
+        print(address_data)
 
         return jsonify(address_data)
 

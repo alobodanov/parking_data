@@ -1,5 +1,5 @@
-var height = 300;
-var width = 500;
+var height = 350;
+var width = 600;
 
 function createMap() {
 
@@ -21,50 +21,50 @@ function createMap() {
 
 var marker = '';
 
-function getData() {
-  var url = "/api/data";
-
-  d3.json(url).then(function(response) {
-    var data = '';
-
-    var map = createMap();
-
-    for (data in response){
-        marker = L.marker(response[data].coords1, {
-          title: response[data].address
-        }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].date_of_infraction+"</h3><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
-    }
-
-    var myPlot = document.getElementById('plot'),
-        d3 = Plotly.d3,
-        N = 16,
-        x = d3.range(N),
-        y = d3.range(N).map( d3.random.normal() ),
-        data = [ { x:x, y:y, type:'scatter',
-                mode:'markers', marker:{size:16} } ],
-        layout = {
-            hovermode:'closest',
-            title:'Parking Data',
-            height: height,
-            width: width,
-            margin: {
-                l: 20,
-                r: 20,
-                b: 30,
-                t: 70,
-                pad: 10
-            },
-            paper_bgcolor:'rgba(171, 205, 239, 0.8)',
-            plot_bgcolor:'rgba(171, 205, 239, 0.8)'
-         };
-    Plotly.newPlot("plot", response, layout);
-
-    myPlot.on('click', function(data){
-        height = 600;
-        width = 800;
-    });
-  });
-}
+//function getData() {
+//  var url = "/api/data";
+//
+//  d3.json(url).then(function(response) {
+//    var data = '';
+//
+//    var map = createMap();
+//
+//    for (data in response){
+//        marker = L.marker(response[data].coords1, {
+//          title: response[data].address
+//        }).bindPopup("<h1>" +response[data].address +"</h1><hr><h3>" +response[data].date_of_infraction+"</h3><hr><h3>" +response[data].infraction_code +"</h3><hr><h3>" +response[data].infraction_description +"</h3><hr><h3>" +response[data].set_fine_amount +"</h3><hr><h3>" +response[data].time_of_infraction +"</h3>").addTo(map);
+//    }
+//
+//    var myPlot = document.getElementById('plot'),
+//        d3 = Plotly.d3,
+//        N = 16,
+//        x = d3.range(N),
+//        y = d3.range(N).map( d3.random.normal() ),
+//        data = [ { x:x, y:y, type:'scatter',
+//                mode:'markers', marker:{size:16} } ],
+//        layout = {
+//            hovermode:'closest',
+//            title:'Parking Data',
+//            height: height,
+//            width: width,
+//            margin: {
+//                l: 30,
+//                r: 20,
+//                b: 30,
+//                t: 70,
+//                pad: 10
+//            },
+//            paper_bgcolor:'rgba(171, 205, 239, 0.8)',
+//            plot_bgcolor:'rgba(171, 205, 239, 0.8)'
+//         };
+//    Plotly.newPlot("plot", response, layout);
+//
+//    myPlot.on('click', function(data){
+//        height = 600;
+//        width = 800;
+//    });
+//  });
+//}
 
 function getFilteredData() {
     var url = "/api/filter";
@@ -115,7 +115,7 @@ function getFilteredData() {
                     height: height,
                     width: width,
                     margin: {
-                        l: 20,
+                        l: 30,
                         r: 20,
                         b: 30,
                         t: 70,
@@ -307,9 +307,9 @@ function getFilteredData() {
 }
 
 
-function changePlotSize(){
-    this.height = 600;
-    this.width = 800;
-}
+//function changePlotSize(){
+//    this.height = 600;
+//    this.width = 800;
+//}
 
-getData();
+getFilteredData();
