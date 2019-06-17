@@ -37,12 +37,14 @@ function getFilteredData() {
     var time = document.getElementById('time').value;
     var date = document.getElementById('date').value;
 
+    var userFilter = {'ticket_type':ticket_type,'address':address,'time':time,'date':date};
+
     d3.json(url, {
         method:"POST",
         header: {
             "Content-type": "application/json; charset=UTF-8"
         },
-        body: JSON.stringify({'ticket_type':ticket_type,'address':address,'time':time,'date':date})
+        body: JSON.stringify(userFilter)
     }).then(function(response) {
         var trace_data = [];
         var placeholder_address =[];
@@ -52,7 +54,14 @@ function getFilteredData() {
 
         var optionVal = document.getElementById('selDescOpt').value;
 
-        if (optionVal) {
+        console.log(userFilter)
+
+        if (
+            userFilter['ticket_type'] != '' ||
+            userFilter['address'] != '' ||
+            userFilter['time'] != '' ||
+            userFilter['date'] != ''
+            ) {
             scatterPlot(response);
 
         } else {

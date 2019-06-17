@@ -123,6 +123,11 @@ def get_data():
     return jsonify(results)
 
 
+@app.route("/api/architecture")
+def architecture():
+    return render_template("architecture-diagram.html")
+
+
 @app.route("/api/filter", methods=['GET', 'POST'])
 def filter_search():
     create_json_structure(results)

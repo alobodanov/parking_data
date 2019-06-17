@@ -4,7 +4,9 @@ body {
   margin: 0;
   background-color: #000;
 }
-
+.architecture-body {
+  background-color: #fff;
+}
 /* set map, body, and html to 100% of the screen size */
 body,
 html {
@@ -81,4 +83,8 @@ input[type='text'] {
 
 select, button {
     font-size: 10pt !important
+}
+
+.architectureStyle{
+    margin: 0 auto !important;
 }
