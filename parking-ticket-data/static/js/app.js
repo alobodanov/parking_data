@@ -56,6 +56,7 @@ function getFilteredData() {
             scatterPlot(response);
 
         } else {
+            barPlot(response);
             console.log('no value');
         }
 
@@ -266,6 +267,44 @@ function getFilteredData() {
     })
 }
 
+function barPlot(response) {
+    var trace1 = {
+      x: ['giraffes', 'orangutans', 'monkeys'],
+      y: [20, 14, 23],
+      name: 'SF Zoo',
+      type: 'bar'
+    };
+
+    var trace2 = {
+      x: ['giraffes', 'orangutans', 'monkeys'],
+      y: [12, 18, 29],
+      name: 'LA Zoo',
+      type: 'bar'
+    };
+
+    var data = [trace1, trace2];
+
+//    var layout = {barmode : 'stack'};
+
+    var layout = {
+        barmode : 'stack',
+        title:'Bar Data',
+        height: height,
+        width: width,
+        margin: {
+            l: 60,
+            r: 20,
+            b: 60,
+            t: 70,
+            pad: 10
+        },
+        paper_bgcolor:'rgba(171, 205, 239, 0.8)',
+        plot_bgcolor:'rgba(171, 205, 239, 0.8)'
+    }
+
+    Plotly.newPlot('plot', data, layout);
+}
+
 function scatterPlot(response) {
     var plotData = [];
     var plotNameAddress = [];
@@ -275,15 +314,12 @@ function scatterPlot(response) {
 
     for (addressData in response) {
         x.push(response[addressData].address);
-        console.log(response[addressData])
         circleSize.push(response[addressData].data[0]['fine_amount'])
 
         for ( addressDataCount in response[addressData].data){
             y.push(response[addressData].data[addressDataCount]['fine_amount']);
         }
     }
-
-    console.log(circleSize);
 
     plotData.push({
         'mode': "markers",
@@ -312,9 +348,6 @@ function scatterPlot(response) {
             paper_bgcolor:'rgba(171, 205, 239, 0.8)',
             plot_bgcolor:'rgba(171, 205, 239, 0.8)'
     };
-
-    console.log('---------------');
-    console.log(plotData);
 
     Plotly.newPlot("plot", plotData, layout);
 }
