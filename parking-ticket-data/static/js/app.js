@@ -50,15 +50,7 @@ function getFilteredData() {
 
         createMarkers(response);
 
-        var plotData = [];
-        var plotNameAddress = [];
-        var x = [];
-        var y = [];
-        var size = [];
-
         var optionVal = document.getElementById('selDescOpt').value;
-
-        console.log(optionVal);
 
         if (optionVal) {
             scatterPlot(response);
@@ -279,22 +271,24 @@ function scatterPlot(response) {
     var plotNameAddress = [];
     var x = [];
     var y = [];
-    var size = [];
+    var circleSize = [];
 
     for (addressData in response) {
         x.push(response[addressData].address);
         console.log(response[addressData])
-        size.push(response[addressData].data['fine_amount'])
+        circleSize.push(response[addressData].data[0]['fine_amount'])
 
         for ( addressDataCount in response[addressData].data){
             y.push(response[addressData].data[addressDataCount]['fine_amount']);
         }
     }
 
+    console.log(circleSize);
+
     plotData.push({
         'mode': "markers",
         'marker': {
-            'size': size * 10,
+            size: circleSize,
             'color': ['rgb(93, 164, 214)', 'rgb(255, 144, 14)',  'rgb(44, 160, 101)', 'rgb(255, 65, 54)']
         },
         'name': "high jump",
