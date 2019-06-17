@@ -26,7 +26,7 @@ function createMarkers(response) {
     for (data in response){
         marker = L.marker(response[data].coords, {
              title: response[data].address
-         }).bindPopup("<p><u><b>Address:</b> "+response[data].address+"</u></p><p><b>Fine: </b>"+response[data].data[0].fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[0].infraction_description+"</p><p>" +response[data].set_fine_amount+"</p><p></p>").addTo(map);
+         }).bindPopup("<p><u><b>Address:</b> "+response[data].address+"</u></p><p><b>Fine: $</b>"+response[data].data[0].fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[0].infraction_description+"</p><p>" +response[data].set_fine_amount+"</p><p></p>").addTo(map);
     }
 }
 
@@ -292,8 +292,6 @@ function barPlot(response) {
     };
 
     var data = [trace1, trace2];
-
-//    var layout = {barmode : 'stack'};
 
     var layout = {
         barmode : 'stack',

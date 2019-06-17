@@ -31,7 +31,9 @@ html {
 .nav-style {
     padding-left: 69px;
 }
-
+.nav-bar {
+    padding-left: 24px;
+}
 .footer {
   background-color: #000 !important;
   height: 54px;
