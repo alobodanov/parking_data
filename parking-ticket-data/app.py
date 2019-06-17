@@ -45,7 +45,7 @@ for i in range(len(clean_df)):
     parking_tickets = {
         "tag_number_masked": str(clean_df['tag_number_masked']),
         "date_of_infraction": str(clean_df1['date_of_infraction']),
-        # "infraction_code": clean_df1['infraction_code'],
+        "infraction_code": str(clean_df1['infraction_code']),
         "infraction_description": clean_df1['infraction_description'],
         "set_fine_amount": clean_df1['set_fine_amount'],
         "time_of_infraction": str(clean_df1['time_of_infraction']),
@@ -71,8 +71,6 @@ results = db.session.query(
     ParkingTickets.time_of_infraction
 ).all()
 
-data_all = json.dumps(results)
-
 
 def create_json_structure(results_data):
 
@@ -85,8 +83,7 @@ def create_json_structure(results_data):
             "infraction_description": result[4],
             "set_fine_amount": result[5],
             "time_of_infraction": result[6],
-            "fine_count":""
-
+            "fine_count": ""
         }
         parking_data.append(parking_object)
 
@@ -102,7 +99,7 @@ def json_structure_for_filter(filtered_data):
             # "infraction_code": result[4],
             "infraction_description": result_json[5],
             "set_fine_amount": result_json[1],
-            "fine_count":result_json[0]
+            "fine_count": result_json[0]
             # "time_of_infraction": result_json[6]
         }
         filtered_json.append(filtered_object)
@@ -165,7 +162,7 @@ def filter_search():
                 ParkingTickets.location2).all()
         else:
             return json.dumps(data_formatter(parking_data))
-        print(filter_results)
+
         filtered_json = json_structure_for_filter(filter_results)
         return jsonify(data_formatter(filtered_json))
 
@@ -183,7 +180,7 @@ def data_formatter(format_data):
                         "total_fines": result['fine_count'],
                         "fine_amount": result['set_fine_amount'],
                         "infraction_description": result['infraction_description'],
-                        # "date_of_infraction": result['date_of_infraction']
+                        "date_of_infraction": result['date_of_infraction']
                     })
                     address['data'] = tmp_obj
         else:
@@ -194,7 +191,7 @@ def data_formatter(format_data):
                     "total_fines": result['fine_count'],
                     "fine_amount": result['set_fine_amount'],
                     "infraction_description": result['infraction_description'],
-                    # "date_of_infraction": result['date_of_infraction']
+                    "date_of_infraction": result['date_of_infraction']
                 }]})
             address_tmp_data.append(result['address'])
 
