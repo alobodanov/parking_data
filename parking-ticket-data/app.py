@@ -29,12 +29,14 @@ from .models import ParkingTickets
 
 db.drop_all()
 db.create_all()
+
 # Load data into DB
 csv_tickets_1 = "parking-ticket-data/Resources/coords2.csv"
 clean_df = pd.read_csv(csv_tickets_1)
 locations = list(clean_df["location2"])
 parking_tickets = {}
 
+parking_data = []
 i = 0
 
 for i in range(len(clean_df)):
@@ -70,19 +72,39 @@ results = db.session.query(
 ).all()
 
 data_all = json.dumps(results)
-parking_data = []
 
-for result in results:
-    parking_object = {
-        "address": result[0],
-        "coords1": [result[1], result[2]],
-        "date_of_infraction": result[3],
-        # "infraction_code": result[4],
-        "infraction_description": result[4],
-        "set_fine_amount": result[5],
-        "time_of_infraction": result[6]
-    }
-    parking_data.append(parking_object)
+
+def create_json_structure(results_data):
+
+    for result in results_data:
+        parking_object = {
+            "address": result[0],
+            "coords": [result[1], result[2]],
+            "date_of_infraction": result[3],
+            # "infraction_code": result[4],
+            "infraction_description": result[4],
+            "set_fine_amount": result[5],
+            "time_of_infraction": result[6]
+        }
+        parking_data.append(parking_object)
+
+
+def json_structure_for_filter(filtered_data):
+    filtered_json = []
+
+    for result_json in filtered_data:
+        filtered_object = {
+            "address": result_json[2],
+            "coords": [result_json[3], result_json[4]],
+            "date_of_infraction": result_json[6],
+            # "infraction_code": result[4],
+            "infraction_description": result_json[5],
+            "set_fine_amount": result_json[1],
+            # "time_of_infraction": result_json[6]
+        }
+        filtered_json.append(filtered_object)
+
+    return filtered_json;
 
 
 @app.route("/api/data")
@@ -103,6 +125,8 @@ def get_data():
 
 @app.route("/api/filter", methods=['GET', 'POST'])
 def filter_search():
+    create_json_structure(results)
+
     if request.method != 'GET':
         filter_data = json.loads(request.data)
         check = 0
@@ -113,7 +137,8 @@ def filter_search():
             ParkingTickets.location2,
             ParkingTickets.lat,
             ParkingTickets.long,
-            ParkingTickets.infraction_description
+            ParkingTickets.infraction_description,
+            ParkingTickets.date_of_infraction
         )
         if filter_data["date"]:
             check = 1
@@ -131,38 +156,41 @@ def filter_search():
             filter_results = filter_results.group_by(ParkingTickets.infraction_description).group_by(
                 ParkingTickets.location2).all()
         else:
-            return json.dumps(parking_data)
+            return json.dumps(data_formatter(parking_data))
 
-        address_data = []
-        address_tmp_data = []
+        filtered_json = json_structure_for_filter(filter_results)
+        return jsonify(data_formatter(filtered_json))
 
-        for result in filter_results:
-            if result[2] in address_tmp_data:
-                for address in address_data:
-                    if result[2] == address['address']:
-                        tmp_obj = address['data']
-                        tmp_obj.append({
-                            "total_fines": result[0],
-                            "fine_amount": result[1],
-                            "infraction_description": result[5]
-                        })
-                        address['data'] = tmp_obj
-            else:
-                address_data.append({
-                    "address": result[2],
-                    "coords": [result[3], result[4]],
-                    "data": [{
-                        "total_fines": result[0],
-                        "fine_amount": result[1],
-                        "infraction_description": result[5]
-                    }]})
 
-                # inner_array.append(inner_data)
-                address_tmp_data.append(result[2])
+def data_formatter(format_data):
+    address_data = []
+    address_tmp_data = []
 
-        print(address_data)
+    for result in format_data:
+        if result['address'] in address_tmp_data:
+            for address in address_data:
+                if result['address'] == address['address']:
+                    tmp_obj = address['data']
+                    tmp_obj.append({
+                        "total_fines": result['set_fine_amount'],
+                        "fine_amount": result['set_fine_amount'],
+                        "infraction_description": result['infraction_description'],
+                        # "date_of_infraction": result['date_of_infraction']
+                    })
+                    address['data'] = tmp_obj
+        else:
+            address_data.append({
+                "address": result['address'],
+                "coords": result['coords'],
+                "data": [{
+                    "total_fines": result['set_fine_amount'],
+                    "fine_amount": result['set_fine_amount'],
+                    "infraction_description": result['infraction_description'],
+                    # "date_of_infraction": result['date_of_infraction']
+                }]})
+            address_tmp_data.append(result['address'])
 
-        return jsonify(address_data)
+    return address_data
 
 
 if __name__ == "__main__":
