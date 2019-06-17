@@ -22,11 +22,15 @@ function createMap() {
 
 function createMarkers(response) {
     var map = createMap();
-
+    var popup_stmt = "";
     for (data in response){
         marker = L.marker(response[data].coords, {
              title: response[data].address
-         }).bindPopup("<p><u><b>Address:</b> "+response[data].address+"</u></p><p><b>Fine: $</b>"+response[data].data[0].fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[0].infraction_description+"</p><p>" +response[data].set_fine_amount+"</p><p></p>").addTo(map);
+         })
+         for(d in response[data].data){
+             popup_stmt=popup_stmt+"<p><u><b>Address:</b> "+response[data].address+"</u></p><p><b>Fine: $</b>"+response[data].data[d].set_fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p>" +response[data].data[d].total_fines+"</p>    "
+         };
+        marker.bindPopup(popup_stmt).addTo(map);
     }
 }
 
@@ -317,14 +321,17 @@ function scatterPlot(response) {
     var plotNameAddress = [];
     var x = [];
     var y = [];
+    var text=[];
     var circleSize = [];
 
     for (addressData in response) {
-        x.push(response[addressData].address);
-        circleSize.push(response[addressData].data[0]['fine_amount'])
-
         for ( addressDataCount in response[addressData].data){
+            x.push(response[addressData].address);
+            console.log(addressDataCount)
+            circleSize.push(5*response[addressData].data[addressDataCount]['total_fines']);
+            console.log(response[addressData].data[addressDataCount]['fine_amount'])
             y.push(response[addressData].data[addressDataCount]['fine_amount']);
+            console.log(y);
         }
     }
 

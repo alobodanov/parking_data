@@ -84,7 +84,9 @@ def create_json_structure(results_data):
             # "infraction_code": result[4],
             "infraction_description": result[4],
             "set_fine_amount": result[5],
-            "time_of_infraction": result[6]
+            "time_of_infraction": result[6],
+            "fine_count":""
+
         }
         parking_data.append(parking_object)
 
@@ -100,11 +102,12 @@ def json_structure_for_filter(filtered_data):
             # "infraction_code": result[4],
             "infraction_description": result_json[5],
             "set_fine_amount": result_json[1],
+            "fine_count":result_json[0]
             # "time_of_infraction": result_json[6]
         }
         filtered_json.append(filtered_object)
 
-    return filtered_json;
+    return filtered_json
 
 
 @app.route("/api/data")
@@ -162,7 +165,7 @@ def filter_search():
                 ParkingTickets.location2).all()
         else:
             return json.dumps(data_formatter(parking_data))
-
+        print(filter_results)
         filtered_json = json_structure_for_filter(filter_results)
         return jsonify(data_formatter(filtered_json))
 
@@ -177,7 +180,7 @@ def data_formatter(format_data):
                 if result['address'] == address['address']:
                     tmp_obj = address['data']
                     tmp_obj.append({
-                        "total_fines": result['set_fine_amount'],
+                        "total_fines": result['fine_count'],
                         "fine_amount": result['set_fine_amount'],
                         "infraction_description": result['infraction_description'],
                         # "date_of_infraction": result['date_of_infraction']
@@ -188,7 +191,7 @@ def data_formatter(format_data):
                 "address": result['address'],
                 "coords": result['coords'],
                 "data": [{
-                    "total_fines": result['set_fine_amount'],
+                    "total_fines": result['fine_count'],
                     "fine_amount": result['set_fine_amount'],
                     "infraction_description": result['infraction_description'],
                     # "date_of_infraction": result['date_of_infraction']
