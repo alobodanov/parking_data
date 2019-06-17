@@ -26,13 +26,29 @@ function createMarkers(response) {
     for (data in response){
         marker = L.marker(response[data].coords, {
              title: response[data].address
+             
          })
+         popup_stmt=popup_stmt+"<p><u><b>Address:</b> ";
          for(d in response[data].data){
          console.log(response[data].data[d])
-             popup_stmt=popup_stmt+"<p><u><b>Address:</b> "+response[data].address+"</u></p><p><b>Fine: $</b>"+response[data].data[d].fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p>" +response[data].data[d].total_fines+"</p>    "
+             popup_stmt=popup_stmt+response[data].address+"</u></p><p><b>Fine: $</b>"+response[data].data[d].fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p>" +response[data].data[d].total_fines+"</p>    "
          };
         marker.bindPopup(popup_stmt).addTo(map);
     }
+}
+
+function createHeatMap(response){
+    var map = createMap();
+    var heatArray=[];
+    for(data in response){
+        for(d in response[data].data){
+        heatArray.push(response[data].coords)
+        } 
+    }
+    var heat = L.heatLayer(heatArray, {
+        radius: 20,
+        blur: 35
+      }).addTo(map);
 }
 
 function getFilteredData() {
@@ -55,9 +71,9 @@ function getFilteredData() {
         var placeholder_address =[];
         var popup_stmt = "";
 
-        createMarkers(response);
+        createHeatMap(response);
 
-        var optionVal = document.getElementById('selDescOpt').value;
+        //var optionVal = document.getElementById('selDescOpt').value;
 
         console.log(userFilter)
 
@@ -67,6 +83,7 @@ function getFilteredData() {
             userFilter['time'] != '' ||
             userFilter['date'] != ''
             ) {
+            createMarkers(response);
             scatterPlot(response);
 
         } else {
@@ -111,6 +128,23 @@ function barPlot(response) {
 
     Plotly.newPlot('plot', data, layout);
 }
+function colorPicker(tickets){
+    if(tickets>400){
+        return 'maroon'
+    }
+    else if(tickets>300){
+        return 'orangered'
+    }
+    else if (tickets>200){
+        return 'gold'
+    }
+    else if (tickets>100){
+        return 'green'
+    }
+    else{
+        return 'navy'
+    }
+}
 
 function scatterPlot(response) {
     var plotData = [];
@@ -119,15 +153,14 @@ function scatterPlot(response) {
     var y = [];
     var text=[];
     var circleSize = [];
+    color = [];
 
     for (addressData in response) {
         for ( addressDataCount in response[addressData].data){
             x.push(response[addressData].address);
-            console.log(addressDataCount)
-            circleSize.push(5*response[addressData].data[addressDataCount]['total_fines']);
-            console.log(response[addressData].data[addressDataCount]['fine_amount'])
+            circleSize.push(response[addressData].data[addressDataCount]['total_fines']);
             y.push(response[addressData].data[addressDataCount]['fine_amount']);
-            console.log(y);
+            color.push(colorPicker(response[addressData].data[addressDataCount]['total_fines']));
         }
     }
 
@@ -135,7 +168,8 @@ function scatterPlot(response) {
         'mode': "markers",
         'marker': {
             size: circleSize,
-            'color': ['rgb(93, 164, 214)', 'rgb(255, 144, 14)',  'rgb(44, 160, 101)', 'rgb(255, 65, 54)']
+            'color': color,
+            'line': color
         },
         'name': "high jump",
         'type': "scatter",
