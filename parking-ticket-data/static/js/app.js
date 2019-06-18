@@ -24,14 +24,15 @@ function createMap() {
 function createMarkers(response) {
     var map = createMap();
     var popup_stmt = "";
+
     for (data in response){
-        popup_stmt="";
+        popup_stmt = "";
         marker = L.marker(response[data].coords, {
              title: response[data].address
          })
          popup_stmt=popup_stmt+"<p><u><b>Address:</b> ";
          for(d in response[data].data){
-             popup_stmt=popup_stmt+response[data].address+"</u></p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p><b>Fine: $</b>"+response[data].data[d].fine_amount+"</p><p><b>Total Fines:</b> " +response[data].data[d].total_fines+"</p>    "
+             popup_stmt = popup_stmt+response[data].address+"</u></p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p><b>Fine: $</b>"+response[data].data[d].fine_amount+"</p><p><b>Total Fines:</b> " +response[data].data[d].total_fines+"</p>    "
          };
         marker.bindPopup(popup_stmt).addTo(map);
     }
@@ -40,6 +41,7 @@ function createMarkers(response) {
 function createHeatMap(response){
     var map = createMap();
     var heatArray=[];
+
     for(data in response){
         for(d in response[data].data){
             heatArray.push(response[data].coords)
@@ -82,6 +84,13 @@ function getFilteredData() {
         },
         body: JSON.stringify(userFilter)
     }).then(function(response) {
+        if (!localStorage.getItem('mapAllData')) {
+            localStorage.setItem('allDataCount', response.length);
+            for (r in response) {
+                localStorage.setItem('mapAllData' + r, JSON.stringify(response[r]));
+            }
+        }
+
         var trace_data = [];
         var placeholder_address =[];
         var popup_stmt = "";
@@ -96,8 +105,15 @@ function getFilteredData() {
             createMarkers(response);
             barPlot(response);
         } else {
-            createHeatMap(response);
-            hPlot(response);
+            let allDataCount = JSON.parse(localStorage.getItem('allDataCount'));
+            var allData = [];
+
+            for (let i = 0; i < allDataCount; i++) {
+                allData.push(JSON.parse(localStorage.getItem('mapAllData' + i)));
+            }
+
+            createHeatMap(allData);
+            hPlot(allData);
         }
     })
 }
