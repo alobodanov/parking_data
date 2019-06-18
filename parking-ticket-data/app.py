@@ -1,75 +1,63 @@
 # import necessary libraries
-import os
 from flask import (
     Flask,
     render_template,
     jsonify,
     request,
-    redirect,
     Markup
 )
 import json
-import re
 import pandas as pd
-from flask_sqlalchemy import SQLAlchemy
-import sqlalchemy
-from sqlalchemy import func, between
+
+import pymongo
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '') or "sqlite:///db.sqlite"
-db = SQLAlchemy(app)
-
-from .models import ParkingTickets
-
-# @app.before_first_request
-# def setup():
-# db.drop_all()
-# db.create_all()
-
-db.drop_all()
-db.create_all()
-
-# Load data into DB
-csv_tickets_1 = "parking-ticket-data/Resources/coord5.csv"
+# Read data from CSV file
+csv_tickets_1 = "parking-ticket-data/Resources/coords2.csv"
 clean_df = pd.read_csv(csv_tickets_1)
-locations = list(clean_df["location2"])
-parking_tickets = {}
 
-parking_data = []
-i = 0
+# Mongodb connection set up
+conn = 'mongodb://localhost:27017'
 
-for i in range(len(clean_df)):
-    clean_df1 = clean_df.iloc[i]
+# Pass connection to the pymongo instance.
+client = pymongo.MongoClient(conn)
 
-    parking_tickets = {
-        "tag_number_masked": str(clean_df['tag_number_masked']),
-        "date_of_infraction": str(clean_df1['date_of_infraction']),
-        "infraction_code": str(clean_df1['infraction_code']),
-        "infraction_description": clean_df1['infraction_description'],
-        "set_fine_amount": clean_df1['set_fine_amount'],
-        "time_of_infraction": float(clean_df1['time_of_infraction']),
-        "location2": clean_df1['location2'],
-        "lat": clean_df1['lat'],
-        "long": clean_df1['lon']
-    }
+# Connect to a database. Will create one if not already available.
+db = client.parking_db
 
-    ParkingTickets(**parking_tickets)
-    db.session.add(ParkingTickets(**parking_tickets))
-    db.session.commit()
-    i = i + 1
+# Drops collection if available to remove duplicates
+# db.parking_tickets.drop()
 
-# TODO coords array
-results = db.session.query(
-    ParkingTickets.location2,
-    ParkingTickets.lat,
-    ParkingTickets.long,
-    ParkingTickets.date_of_infraction,
-    # ParkingTickets.infraction_code,
-    ParkingTickets.infraction_description,
-    ParkingTickets.set_fine_amount,
-    ParkingTickets.time_of_infraction
-).all()
+# Creates a collection in the database and inserts data from csv
+# for i in range(len(clean_df)):
+#     clean_df1 = clean_df.iloc[i]
+#
+#     db.parking_tickets.insert(
+#         {
+#             "tag_number_masked": str(clean_df1['tag_number_masked']),
+#             "date_of_infraction": str(clean_df1['date_of_infraction']),
+#             "infraction_code": str(clean_df1['infraction_code']),
+#             "infraction_description": clean_df1['infraction_description'],
+#             "set_fine_amount": str(clean_df1['set_fine_amount']),
+#             "time_of_infraction": float(clean_df1['time_of_infraction']),
+#             "location2": clean_df1['location2'],
+#             "coords": [
+#                 clean_df1['lat'],
+#                 clean_df1['lon']
+#             ]
+#         }
+#     )
+#     i = i + 1
+
+
+def get_all_data():
+    return list(db.parking_tickets.find({}))
+
+
+clean_df_tmp = list(db.parking_tickets.find({}))
+results = []
+location_data = []
 
 
 def create_json_structure(results_data):
@@ -84,7 +72,7 @@ def create_json_structure(results_data):
             "time_of_infraction": result[6],
             "fine_count": ""
         }
-        parking_data.append(parking_object)
+        location_data.append(parking_object)
 
 
 def json_structure_for_filter(filtered_data):
@@ -106,11 +94,6 @@ def json_structure_for_filter(filtered_data):
     return filtered_json
 
 
-@app.route("/api/data")
-def data():
-    return json.dumps(parking_data)
-
-
 @app.route("/")
 def home():
     return render_template("index.html", seldesc=Markup(list(clean_df['infraction_description'].unique())))
@@ -128,22 +111,15 @@ def architecture():
 
 @app.route("/api/filter", methods=['GET', 'POST'])
 def filter_search():
-    create_json_structure(results)
+    # create_json_structure(results)
 
     if request.method != 'GET':
         filter_data = json.loads(request.data)
         check = 0
 
-        filter_results = db.session.query(
-            func.count(ParkingTickets.set_fine_amount),
-            ParkingTickets.set_fine_amount,
-            ParkingTickets.location2,
-            ParkingTickets.lat,
-            ParkingTickets.long,
-            ParkingTickets.infraction_description,
-            ParkingTickets.date_of_infraction,
-            ParkingTickets.time_of_infraction
-        )
+        # filter_results = db.session.query(
+        #     func.count(ParkingTickets.set_fine_amount),
+
 
         if filter_data["time_from"].replace(':', '').lstrip('0') == '':
             time_from_tmp = 0
@@ -155,28 +131,62 @@ def filter_search():
         else:
             time_to_tmp = int(filter_data["time_to"].replace(':', '').lstrip('0'))
 
-        if filter_data["date"]:
+        if filter_data["date"] or filter_data["time_from"] or filter_data["time_to"] or filter_data["address"] or filter_data["ticket_type"]:
+            print('----------------->>>>>>>>>><<<<<<<<<<<-------------------')
+            print(filter_data["date"])
+            print(filter_data["time_from"])
+            print(filter_data["time_to"])
+            print(filter_data["address"])
+            print(filter_data["ticket_type"])
             check = 1
-            filter_results = filter_results.filter(ParkingTickets.date_of_infraction == filter_data["date"])
+            # filter_results = db.parking_tickets.find(
+            #     {
+            #         '$or': [
 
-        if filter_data["time_from"] and filter_data["time_to"]:
-            check = 1
-            filter_results = filter_results.filter(ParkingTickets.time_of_infraction >= time_from_tmp)\
-                .filter(ParkingTickets.time_of_infraction <= time_to_tmp)
 
-        if filter_data["address"]:
-            check = 1
-            filter_results = filter_results.filter(ParkingTickets.location2.like("%" + filter_data["address"].upper() + "%"))
-
-        if filter_data["ticket_type"] and filter_data["ticket_type"] != "":
-            check = 1
-            filter_results = filter_results.filter(ParkingTickets.infraction_description == filter_data["ticket_type"])
+                        # {
+                        #     'date_of_infraction': filter_data["date"]
+                        # },
+                        # {
+                        #     'time_of_infraction': {
+                        #         '$gte': time_from_tmp,
+                        #         '$lte': time_to_tmp
+                        #     }
+                        # },
+                        # {
+                        #     "location2": {
+                        #         "$regex": filter_data['address'], "$options": "i"
+                        #     }
+                        # },
+                        # {
+                        #     'infraction_description': filter_data["ticket_type"]
+                        # }
+            #         ]
+            #     }
+            # )
+            filter_results = db.parking_tickets.find(
+                {
+                    'date_of_infraction': filter_data["date"],
+                    'time_of_infraction': {
+                                '$gte': time_from_tmp,
+                                '$lte': time_to_tmp
+                            },
+                    "location2": {
+                                "$regex": filter_data['address'], "$options": "i"
+                            },
+                    'infraction_description': filter_data["ticket_type"]
+                }
+            )
+            print(list(filter_results))
 
         if check != 0:
-            filter_results = filter_results.group_by(ParkingTickets.infraction_description).group_by(
-                ParkingTickets.location2).all()
+            # print(filter_results)
+            filter_results
+
+                # (ParkingTickets.infraction_description).group_by(
+                # ParkingTickets.location2).all()
         else:
-            return json.dumps(data_formatter(parking_data))
+            return json.dumps(data_formatter(get_all_data()))
 
         filtered_json = json_structure_for_filter(filter_results)
         return jsonify(data_formatter(filtered_json))
@@ -187,12 +197,12 @@ def data_formatter(format_data):
     address_tmp_data = []
 
     for result in format_data:
-        if result['address'] in address_tmp_data:
+        if result['location2'] in address_tmp_data:
             for address in address_data:
-                if result['address'] == address['address']:
+                if result['location2'] == address['address']:
                     tmp_obj = address['data']
                     tmp_obj.append({
-                        "total_fines": result['fine_count'],
+                        # "total_fines": result['fine_count'],
                         "fine_amount": result['set_fine_amount'],
                         "infraction_description": result['infraction_description'],
                         "date_of_infraction": result['date_of_infraction']
@@ -200,15 +210,15 @@ def data_formatter(format_data):
                     address['data'] = tmp_obj
         else:
             address_data.append({
-                "address": result['address'],
+                "address": result['location2'],
                 "coords": result['coords'],
                 "data": [{
-                    "total_fines": result['fine_count'],
+                    # "total_fines": result['fine_count'],
                     "fine_amount": result['set_fine_amount'],
                     "infraction_description": result['infraction_description'],
                     "date_of_infraction": result['date_of_infraction']
                 }]})
-            address_tmp_data.append(result['address'])
+            address_tmp_data.append(result['location2'])
 
     return address_data
 

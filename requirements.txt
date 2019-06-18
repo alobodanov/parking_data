@@ -1,3 +1,4 @@
+pymongo==3.8.0
 geopy==1.20.0
 pandas==0.24.2
 appnope==0.1.0
