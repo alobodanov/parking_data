@@ -13,7 +13,7 @@ import re
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy
-from sqlalchemy import func
+from sqlalchemy import func, between
 
 app = Flask(__name__)
 
@@ -31,7 +31,7 @@ db.drop_all()
 db.create_all()
 
 # Load data into DB
-csv_tickets_1 = "parking-ticket-data/Resources/coord4.csv"
+csv_tickets_1 = "parking-ticket-data/Resources/coord5.csv"
 clean_df = pd.read_csv(csv_tickets_1)
 locations = list(clean_df["location2"])
 parking_tickets = {}
@@ -48,7 +48,7 @@ for i in range(len(clean_df)):
         "infraction_code": str(clean_df1['infraction_code']),
         "infraction_description": clean_df1['infraction_description'],
         "set_fine_amount": clean_df1['set_fine_amount'],
-        "time_of_infraction": str(clean_df1['time_of_infraction']),
+        "time_of_infraction": float(clean_df1['time_of_infraction']),
         "location2": clean_df1['location2'],
         "lat": clean_df1['lat'],
         "long": clean_df1['lon']
@@ -143,26 +143,47 @@ def filter_search():
             ParkingTickets.lat,
             ParkingTickets.long,
             ParkingTickets.infraction_description,
-            ParkingTickets.date_of_infraction
+            ParkingTickets.date_of_infraction,
+            ParkingTickets.time_of_infraction
         )
+        # print('------')
+        # print(filter_data["time_from"].replace(':', ''))
+
+        time_from_tmp = 0
+
+        if filter_data["time_from"].replace(':', '').lstrip('0') == '':
+            time_from_tmp = 0.0
+        else:
+            time_from_tmp = float(filter_data["time_from"].replace(':', ''))
+
+        # print(time_from_tmp)
+
         if filter_data["date"]:
             check = 1
             filter_results = filter_results.filter(ParkingTickets.date_of_infraction == filter_data["date"])
-        if filter_data["time"]:
+
+        if filter_data["time_from"] and filter_data["time_to"]:
             check = 1
-            filter_results = filter_results.filter(ParkingTickets.time_of_infraction == filter_data["time"])
+            filter_results = filter_results.filter(
+                ParkingTickets.time_of_infraction >= time_from_tmp)
+                # .filter(ParkingTickets.time_of_infraction <= filter_data["time_to"].replace(':', '').lstrip('0') + '.0')
+
         if filter_data["address"]:
             check = 1
             filter_results = filter_results.filter(ParkingTickets.location2.like("%" + filter_data["address"].upper() + "%"))
+
         if filter_data["ticket_type"] and filter_data["ticket_type"] != "":
             check = 1
             filter_results = filter_results.filter(ParkingTickets.infraction_description == filter_data["ticket_type"])
+
         if check != 0:
             filter_results = filter_results.group_by(ParkingTickets.infraction_description).group_by(
-                ParkingTickets.location2).all()
+                ParkingTickets.location2)
         else:
+            # print('test------')
             return json.dumps(data_formatter(parking_data))
 
+        # print(filter_results)
         filtered_json = json_structure_for_filter(filter_results)
         return jsonify(data_formatter(filtered_json))
 
@@ -172,6 +193,8 @@ def data_formatter(format_data):
     address_tmp_data = []
 
     for result in format_data:
+
+        # print(result)
         if result['address'] in address_tmp_data:
             for address in address_data:
                 if result['address'] == address['address']:

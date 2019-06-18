@@ -1,6 +1,8 @@
 var height = 350;
 var width = 600;
 var marker = '';
+var optionVal = document.getElementById('selDescOpt').value;
+var map = '';
 
 function createMap() {
 
@@ -26,12 +28,10 @@ function createMarkers(response) {
     for (data in response){
         marker = L.marker(response[data].coords, {
              title: response[data].address
-             
          })
          popup_stmt=popup_stmt+"<p><u><b>Address:</b> ";
          for(d in response[data].data){
-         console.log(response[data].data[d])
-             popup_stmt=popup_stmt+response[data].address+"</u></p><p><b>Fine: $</b>"+response[data].data[d].fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p>" +response[data].data[d].total_fines+"</p>    "
+             popup_stmt=popup_stmt+response[data].address+"</u></p><p><b>Fine: $</b>"+response[data].data[d].fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p><b>Total Fines:</b> " +response[data].data[d].total_fines+"</p>    "
          };
         marker.bindPopup(popup_stmt).addTo(map);
     }
@@ -42,8 +42,8 @@ function createHeatMap(response){
     var heatArray=[];
     for(data in response){
         for(d in response[data].data){
-        heatArray.push(response[data].coords)
-        } 
+            heatArray.push(response[data].coords)
+        }
     }
     var heat = L.heatLayer(heatArray, {
         radius: 20,
@@ -55,10 +55,19 @@ function getFilteredData() {
     var url = "/api/filter";
     var ticket_type = document.getElementById('selDescOpt').value;
     var address = document.getElementById('address').value;
-    var time = document.getElementById('time').value;
+    var time_from = document.getElementById('timeFrom').value;
+    var time_to = document.getElementById('timeTo').value;
     var date = document.getElementById('date').value;
 
-    var userFilter = {'ticket_type':ticket_type,'address':address,'time':time,'date':date};
+    var userFilter = {
+        'ticket_type': ticket_type,
+        'address': address,
+        'time_from': time_from,
+        'time_to': time_to,
+        'date': date
+    };
+
+//    console.log(userFilter)
 
     d3.json(url, {
         method:"POST",
@@ -71,22 +80,22 @@ function getFilteredData() {
         var placeholder_address =[];
         var popup_stmt = "";
 
-        createHeatMap(response);
+//        createMarkers(response);
 
-        //var optionVal = document.getElementById('selDescOpt').value;
-
-        console.log(userFilter)
+//        var optionVal = document.getElementById('selDescOpt').value;
 
         if (
             userFilter['ticket_type'] != '' ||
             userFilter['address'] != '' ||
-            userFilter['time'] != '' ||
+            userFilter['time_from'] != '' ||
+            userFilter['time_to'] != '' ||
             userFilter['date'] != ''
             ) {
             createMarkers(response);
             scatterPlot(response);
 
         } else {
+            createHeatMap(response);
             barPlot(response);
             console.log('no value');
         }

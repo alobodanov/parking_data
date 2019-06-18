@@ -48,11 +48,16 @@
             <input id="address" type="text" class="form-control" placeholder="Address" name="address">
         </div>
         <div class="form-group">
-            <input id="time" type="text" class="form-control" placeholder="Time (HHMM)" name="time">
-        </div>
-        <div class="form-group">
             <input id="date" type="text" class="form-control" placeholder="Date (YYYMMDD)" name="date">
         </div>
+        <div class="form-group">
+            From <input id="timeFrom" class="dateTimeStyle" type="time" name="usr_time_from">
+            To <input id="timeTo" class="dateTimeStyle" type="time" name="usr_time_to">
+            <label class="control-label" class="control-label" for="timeTo">Enter to time</label>
+            <label class="control-label" class="control-label" for="timeFrom">Enter from time</label>
+<!--            <input id="time" type="text" class="form-control" placeholder="Time (HHMM)" name="time">-->
+        </div>
+
         <button type="button" onclick="getFilteredData()" class="btn btn-primary">Submit</button>
     </form>
 </div>

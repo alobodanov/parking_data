@@ -10,7 +10,7 @@ class ParkingTickets(db.Model):
     infraction_code = db.Column(db.String(50), nullable=True)
     infraction_description = db.Column(db.String(50), nullable=True)
     set_fine_amount = db.Column(db.Float, nullable=True)
-    time_of_infraction = db.Column(db.String(50), nullable=True)
+    time_of_infraction = db.Column(db.Float, nullable=True)
     location2 = db.Column(db.String(50), nullable=True)
     lat = db.Column(db.Float, nullable=True)
     long = db.Column(db.Float, nullable=True)

@@ -90,3 +90,9 @@ select, button {
 .architectureStyle{
     margin: 0 auto !important;
 }
+
+.dateTimeStyle {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding-left: 10px;
+}
