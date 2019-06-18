@@ -26,6 +26,7 @@ function createMarkers(response) {
     var map = createMap();
     var popup_stmt = "";
     for (data in response){
+        popup_stmt="";
         marker = L.marker(response[data].coords, {
              title: response[data].address
          })
@@ -162,12 +163,11 @@ function hPlot(response){
     color = [];
 
       response.sort(function(a, b) {
-          console.log(a.data.length);
-          console.log(b.data.length)
-        return parseFloat(a.data.length) - parseFloat(b.data.length);
+        return parseFloat(b.data.length) - parseFloat(a.data.length);
       });
 
       response = response.slice(0, 10);
+      response.reverse();
 
       for (addressData in response) {
         for ( addressDataCount in response[addressData].data){
