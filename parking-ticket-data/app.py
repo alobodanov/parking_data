@@ -73,7 +73,6 @@ results = db.session.query(
 
 
 def create_json_structure(results_data):
-
     for result in results_data:
         parking_object = {
             "address": result[0],
@@ -92,7 +91,6 @@ def json_structure_for_filter(filtered_data):
     filtered_json = []
 
     for result_json in filtered_data:
-        print(result_json)
         filtered_object = {
             "address": result_json[2],
             "coords": [result_json[3], result_json[4]],
@@ -113,7 +111,6 @@ def data():
     return json.dumps(parking_data)
 
 
-# create route that renders index.html template
 @app.route("/")
 def home():
     return render_template("index.html", seldesc=Markup(list(clean_df['infraction_description'].unique())))
@@ -147,10 +144,6 @@ def filter_search():
             ParkingTickets.date_of_infraction,
             ParkingTickets.time_of_infraction
         )
-        print('------')
-        print(filter_data["time_from"].replace(':', ''))
-        print(filter_data["time_to"].replace(':', ''))
-
 
         if filter_data["time_from"].replace(':', '').lstrip('0') == '':
             time_from_tmp = 0
@@ -185,7 +178,6 @@ def filter_search():
         else:
             return json.dumps(data_formatter(parking_data))
 
-        # print(filter_results)
         filtered_json = json_structure_for_filter(filter_results)
         return jsonify(data_formatter(filtered_json))
 
@@ -195,8 +187,6 @@ def data_formatter(format_data):
     address_tmp_data = []
 
     for result in format_data:
-
-        # print(result)
         if result['address'] in address_tmp_data:
             for address in address_data:
                 if result['address'] == address['address']:

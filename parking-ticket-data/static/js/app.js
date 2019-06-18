@@ -5,7 +5,6 @@ var optionVal = document.getElementById('selDescOpt').value;
 var map = '';
 
 function createMap() {
-
     document.getElementById('parent').innerHTML = "<div id='map'> <div id='plot' class='my-plot-style'></div>";
 
     return L.map("map", {
@@ -63,6 +62,7 @@ function getFilteredData() {
     if ((time_from && !time_to) || (!time_from && time_to)) {
         document.getElementById('errorFromTo').style.display = 'block'
         return;
+
     } else {
         document.getElementById('errorFromTo').style.display = 'none';
     }
@@ -75,8 +75,6 @@ function getFilteredData() {
         'date': date
     };
 
-//    console.log(userFilter)
-
     d3.json(url, {
         method:"POST",
         header: {
@@ -88,10 +86,6 @@ function getFilteredData() {
         var placeholder_address =[];
         var popup_stmt = "";
 
-//        createMarkers(response);
-
-//        var optionVal = document.getElementById('selDescOpt').value;
-
         if (
             userFilter['ticket_type'] != '' ||
             userFilter['address'] != '' ||
@@ -101,11 +95,9 @@ function getFilteredData() {
             ) {
             createMarkers(response);
             barPlot(response);
-
         } else {
             createHeatMap(response);
             hPlot(response);
-            console.log(response);
         }
     })
 }
@@ -146,8 +138,6 @@ function barPlot(response) {
             paper_bgcolor:'rgba(171, 205, 239, 0.8)',
             plot_bgcolor:'rgba(171, 205, 239, 0.8)'
     };
-
-
 
     Plotly.newPlot('plot', plotData, layout);
 }
@@ -201,57 +191,6 @@ function hPlot(response){
     };
 
     Plotly.newPlot('plot', plotData, layout);
-
 }
-
-/* function scatterPlot(response) {
-    var plotData = [];
-    var plotNameAddress = [];
-    var x = [];
-    var y = [];
-    var text=[];
-    var circleSize = [];
-    var color = [];
-
-    for (addressData in response) {
-        for ( addressDataCount in response[addressData].data){
-            x.push(response[addressData].address);
-            circleSize.push(response[addressData].data[addressDataCount]['total_fines']);
-            y.push(response[addressData].data[addressDataCount]['fine_amount']);
-            color.push(colorPicker(response[addressData].data[addressDataCount]['total_fines']));
-        }
-    }
-
-    plotData.push({
-        'mode': "markers",
-        'marker': {
-            size: circleSize,
-            'color': color,
-            'line': color
-        },
-        'name': "high jump",
-        'type': "scatter",
-        'x':x,
-        'y':y
-    });
-
-    var layout = {
-        hovermode:'closest',
-            title:'Parking Data',
-            height: height,
-            width: width,
-            margin: {
-                l: 60,
-                r: 20,
-                b: 60,
-                t: 70,
-                pad: 10
-            },
-            paper_bgcolor:'rgba(171, 205, 239, 0.8)',
-            plot_bgcolor:'rgba(171, 205, 239, 0.8)'
-    };
-
-    Plotly.newPlot("plot", plotData, layout);
-} */
 
 getFilteredData();
