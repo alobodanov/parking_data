@@ -31,7 +31,7 @@ db.drop_all()
 db.create_all()
 
 # Load data into DB
-csv_tickets_1 = "parking-ticket-data/Resources/coord5.csv"
+csv_tickets_1 = "parking-ticket-data/Resources/coords2.csv"
 clean_df = pd.read_csv(csv_tickets_1)
 locations = list(clean_df["location2"])
 parking_tickets = {}
