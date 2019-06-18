@@ -31,7 +31,7 @@ function createMarkers(response) {
          })
          popup_stmt=popup_stmt+"<p><u><b>Address:</b> ";
          for(d in response[data].data){
-             popup_stmt=popup_stmt+response[data].address+"</u></p><p><b>Fine: $</b>"+response[data].data[d].fine_amount+"</p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p><b>Total Fines:</b> " +response[data].data[d].total_fines+"</p>    "
+             popup_stmt=popup_stmt+response[data].address+"</u></p><p><b>Infraction Description: </b>"+response[data].data[d].infraction_description+"</p><p><b>Fine: $</b>"+response[data].data[d].fine_amount+"</p><p><b>Total Fines:</b> " +response[data].data[d].total_fines+"</p>    "
          };
         marker.bindPopup(popup_stmt).addTo(map);
     }
@@ -58,6 +58,13 @@ function getFilteredData() {
     var time_from = document.getElementById('timeFrom').value;
     var time_to = document.getElementById('timeTo').value;
     var date = document.getElementById('date').value;
+
+    if ((time_from && !time_to) || (!time_from && time_to)) {
+        document.getElementById('errorFromTo').style.display = 'block'
+        return;
+    } else {
+        document.getElementById('errorFromTo').style.display = 'none';
+    }
 
     var userFilter = {
         'ticket_type': ticket_type,
@@ -122,7 +129,6 @@ function barPlot(response) {
         }
     }
 
-    console.log(plotData);
     var layout = {
         'barmode': "stack",
         hovermode:'closest',
@@ -140,27 +146,10 @@ function barPlot(response) {
             plot_bgcolor:'rgba(171, 205, 239, 0.8)'
     };
 
-   
+
 
     Plotly.newPlot('plot', plotData, layout);
 }
-/* function colorPicker(tickets){
-    if(tickets>400){
-        return 'maroon'
-    }
-    else if(tickets>300){
-        return 'orangered'
-    }
-    else if (tickets>200){
-        return 'gold'
-    }
-    else if (tickets>100){
-        return 'green'
-    }
-    else{
-        return 'navy'
-    }
-} */
 
 function hPlot(response){
 
@@ -171,22 +160,22 @@ function hPlot(response){
     var text=[];
     var circleSize = [];
     color = [];
-    
+
       response.sort(function(a, b) {
           console.log(a.data.length);
           console.log(b.data.length)
         return parseFloat(a.data.length) - parseFloat(b.data.length);
       });
-      
+
       response = response.slice(0, 10);
 
       for (addressData in response) {
         for ( addressDataCount in response[addressData].data){
             x.push(response[addressData].address);
-            y.push(response[addressData].data.length); 
+            y.push(response[addressData].data.length);
         }
     }
-   
+
     plotData.push({
         type: "bar",
         orientation: "h",
@@ -194,7 +183,24 @@ function hPlot(response){
         'y':x,
     });
 
-    Plotly.newPlot('plot', plotData);
+    var layout = {
+        'barmode': "bar",
+        hovermode:'closest',
+        title:'Parking Data',
+        height: height,
+        width: width,
+        margin: {
+            l: 150,
+            r: 0,
+            b: 30,
+            t: 70,
+            pad: 10
+        },
+        paper_bgcolor:'rgba(171, 205, 239, 0.8)',
+        plot_bgcolor:'rgba(171, 205, 239, 0.8)'
+    };
+
+    Plotly.newPlot('plot', plotData, layout);
 
 }
 
@@ -205,7 +211,7 @@ function hPlot(response){
     var y = [];
     var text=[];
     var circleSize = [];
-    color = [];
+    var color = [];
 
     for (addressData in response) {
         for ( addressDataCount in response[addressData].data){

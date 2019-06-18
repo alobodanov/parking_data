@@ -53,9 +53,7 @@
         <div class="form-group">
             From <input id="timeFrom" class="dateTimeStyle" type="time" name="usr_time_from">
             To <input id="timeTo" class="dateTimeStyle" type="time" name="usr_time_to">
-            <label class="control-label" class="control-label" for="timeTo">Enter to time</label>
-            <label class="control-label" class="control-label" for="timeFrom">Enter from time</label>
-<!--            <input id="time" type="text" class="form-control" placeholder="Time (HHMM)" name="time">-->
+            <label class="text-danger" id="errorFromTo" for="timeTo">Enter From and To time</label>
         </div>
 
         <button type="button" onclick="getFilteredData()" class="btn btn-primary">Submit</button>

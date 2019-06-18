@@ -96,3 +96,7 @@ select, button {
     border-radius: 5px;
     padding-left: 10px;
 }
+
+#errorFromTo {
+    display: none;
+}

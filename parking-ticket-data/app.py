@@ -31,7 +31,7 @@ db.drop_all()
 db.create_all()
 
 # Load data into DB
-csv_tickets_1 = "parking-ticket-data/Resources/coords2.csv"
+csv_tickets_1 = "parking-ticket-data/Resources/coord5.csv"
 clean_df = pd.read_csv(csv_tickets_1)
 locations = list(clean_df["location2"])
 parking_tickets = {}
@@ -92,6 +92,7 @@ def json_structure_for_filter(filtered_data):
     filtered_json = []
 
     for result_json in filtered_data:
+        print(result_json)
         filtered_object = {
             "address": result_json[2],
             "coords": [result_json[3], result_json[4]],
@@ -146,17 +147,20 @@ def filter_search():
             ParkingTickets.date_of_infraction,
             ParkingTickets.time_of_infraction
         )
-        # print('------')
-        # print(filter_data["time_from"].replace(':', ''))
+        print('------')
+        print(filter_data["time_from"].replace(':', ''))
+        print(filter_data["time_to"].replace(':', ''))
 
-        time_from_tmp = 0
 
         if filter_data["time_from"].replace(':', '').lstrip('0') == '':
-            time_from_tmp = 0.0
+            time_from_tmp = 0
         else:
-            time_from_tmp = float(filter_data["time_from"].replace(':', ''))
+            time_from_tmp = int(filter_data["time_from"].replace(':', '').lstrip('0'))
 
-        # print(time_from_tmp)
+        if filter_data["time_to"].replace(':', '').lstrip('0') == '':
+            time_to_tmp = 0
+        else:
+            time_to_tmp = int(filter_data["time_to"].replace(':', '').lstrip('0'))
 
         if filter_data["date"]:
             check = 1
@@ -164,9 +168,8 @@ def filter_search():
 
         if filter_data["time_from"] and filter_data["time_to"]:
             check = 1
-            filter_results = filter_results.filter(
-                ParkingTickets.time_of_infraction >= time_from_tmp)
-                # .filter(ParkingTickets.time_of_infraction <= filter_data["time_to"].replace(':', '').lstrip('0') + '.0')
+            filter_results = filter_results.filter(ParkingTickets.time_of_infraction >= time_from_tmp)\
+                .filter(ParkingTickets.time_of_infraction <= time_to_tmp)
 
         if filter_data["address"]:
             check = 1
@@ -178,9 +181,8 @@ def filter_search():
 
         if check != 0:
             filter_results = filter_results.group_by(ParkingTickets.infraction_description).group_by(
-                ParkingTickets.location2)
+                ParkingTickets.location2).all()
         else:
-            # print('test------')
             return json.dumps(data_formatter(parking_data))
 
         # print(filter_results)
