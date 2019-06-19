@@ -1,5 +1,5 @@
 var height = 350;
-var width = 600;
+var width = 800;
 var marker = '';
 var optionVal = document.getElementById('selDescOpt').value;
 var map = '';
@@ -84,13 +84,6 @@ function getFilteredData() {
         },
         body: JSON.stringify(userFilter)
     }).then(function(response) {
-        if (!localStorage.getItem('mapAllData')) {
-            localStorage.setItem('allDataCount', response.length);
-            for (r in response) {
-                localStorage.setItem('mapAllData' + r, JSON.stringify(response[r]));
-            }
-        }
-
         var trace_data = [];
         var placeholder_address =[];
         var popup_stmt = "";
@@ -105,15 +98,8 @@ function getFilteredData() {
             createMarkers(response);
             barPlot(response);
         } else {
-            let allDataCount = JSON.parse(localStorage.getItem('allDataCount'));
-            var allData = [];
-
-            for (let i = 0; i < allDataCount; i++) {
-                allData.push(JSON.parse(localStorage.getItem('mapAllData' + i)));
-            }
-
-            createHeatMap(allData);
-            hPlot(allData);
+            createHeatMap(response);
+            hPlot(response);
         }
     })
 }
