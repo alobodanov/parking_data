@@ -41,6 +41,8 @@ html {
   margin: 0 auto;
   display: table;
   padding-top: 8px;
+  width: 100%;
+  padding-left: 47%
 }
 .footer .container {
     text-align: -webkit-center;

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-142369838-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-142369838-1');
+    </script>
+
+    <meta charset="utf-8">
+    <title>Parking Data - Home</title>
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js" integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q==" crossorigin=""></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <!-- Our CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/prediction.css') }}">
+
+    <!-- API key -->
+    <!--<script type="text/javascript" src="config.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<!--    <script src="{{ url_for('static', filename='js/app.js') }}"></script>-->
+</head>
+
+<body>
+<!-- The div where we will inject our map -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark nav-style">
+    <a href="/">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="logo" style="width:40px;">
+    </a>
+    <ul class="navbar-nav nav-bar">
+        <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/api/prediction">Prediction</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/api/architecture">Architecture</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/api/get/data">Data</a>
+        </li>
+    </ul>
+</nav>
+<div class="controls">
+    <form class="form" id="formFields">
+        <div class="col-auto">
+            <select id="selDescOpt" class="form-control" name="ticket_type"></select>
+        </div>
+        <div class="col-auto">
+            <input id="address" type="text" class="form-control" placeholder="Address" name="address">
+        </div>
+        <div class="col-auto">
+            <input id="date" type="text" class="form-control" placeholder="Date (YYYMMDD)" name="date">
+        </div>
+        <div class="col-auto">
+            From <input id="timeFrom" class="dateTimeStyle" type="time" name="usr_time_from">
+        </div>
+        <div class="col-auto">
+            To <input id="timeTo" class="dateTimeStyle" type="time" name="usr_time_to">
+            <label class="text-danger" id="errorFromTo" for="timeTo">Enter From and To time</label>
+        </div>
+        <div class="col-auto">
+            <button type="button" onclick="getFilteredData()" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+<footer class="footer">
+    <a href="https://github.com/alobodanov/parking_data">
+        <img src="{{ url_for('static', filename='img/GitHub-Mark-Light-64px.png') }}" alt="logo"
+             style="width:40px;">
+    </a>
+</footer>
+</body>
+</html>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script>
+    var selDesc = {{seldesc}};
+
+    var sel = document.getElementById('selDescOpt');
+
+    var optAll = document.createElement('option');
+    optAll.innerHTML = 'All';
+    optAll.value = '';
+    sel.appendChild(optAll);
+
+    for(var i = 0; i < selDesc.length; i++) {
+        var opt = document.createElement('option');
+        opt.innerHTML = selDesc[i];
+        opt.value = selDesc[i];
+        sel.appendChild(opt);
+    }
+</script>
+<script src="{{ url_for('static', filename='js/leaflet-heat.js') }}"></script>

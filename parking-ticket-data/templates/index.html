@@ -36,16 +36,21 @@
 <body>
 <!-- The div where we will inject our map -->
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark nav-style">
-    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="logo" style="width:40px;">
+    <a href="/">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="logo" style="width:40px;">
+    </a>
     <ul class="navbar-nav nav-bar">
         <li class="nav-item">
             <a class="nav-link" href="/">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/api/get/data">Data</a>
+            <a class="nav-link" href="/api/prediction">Prediction</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/api/architecture">Architecture</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/api/get/data">Data</a>
         </li>
     </ul>
 </nav>
