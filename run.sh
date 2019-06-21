@@ -1,1 +1,1 @@
-FLASK_APP=parking-ticket-data/app.py flask run
+FLASK_APP=parkingTicketData/app.py flask run
