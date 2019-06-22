@@ -43,13 +43,7 @@ class DB(object):
 
                     ]
                 },
-            },
-            {
-                '$group': {
-                    '_id': '$infraction_description',
-                    'location2': {'$addToSet':'$location2'}
-                }
-            },
+            }
         ]
 
         if searched_data["date"]:
@@ -78,6 +72,8 @@ class DB(object):
             filter_statments[0]['$match']['$and'].append(
                 {'infraction_description': searched_data["ticket_type"]}
             )
+
+
 
         return DB.DATABASE[collection].aggregate(
             filter_statments,
