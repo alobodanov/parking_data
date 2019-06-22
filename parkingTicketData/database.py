@@ -25,11 +25,6 @@ class DB(object):
     @staticmethod
     def filter(collection, searched_data):
         print('----------------->>>>>>>>>>Filter from DB file<<<<<<<<<<<-------------------')
-        print(searched_data["date"])
-        print(searched_data["time_from"])
-        print(searched_data["time_to"])
-        print(searched_data["address"])
-        print(searched_data["ticket_type"])
 
         if searched_data["time_from"].replace(':', '').lstrip('0') == '':
             time_from_tmp = 0
@@ -41,45 +36,49 @@ class DB(object):
         else:
             time_to_tmp = int(searched_data["time_to"].replace(':', '').lstrip('0'))
 
-        return DB.DATABASE[collection].aggregate([
+        filter_statments = [
             {
                 '$match': {
                     '$and': [
-                        {
-                            '$or': [
-                                {'date_of_infraction': searched_data["date"]},
-                            ]
-                        },
-                        {
-                            '$or': [
-                                {'infraction_description': searched_data["ticket_type"]}
-                            ]
-                        },
-                        {
-                            '$or': [
-                                {"location2": {"$regex": searched_data['address'], "$options": "i"}}
-                            ]
-                        },
-                        {
-                            '$or': [
-                                {
-                                    'time_of_infraction': {
-                                        '$gte': time_from_tmp,
-                                        '$lte': time_to_tmp
-                                    },
-                                }
-                            ]
-                        }
+
                     ]
+                },
+            },
+            {
+                '$group': {
+                    '_id': '$infraction_description',
+                    'location2': {'$addToSet':'$location2'}
                 }
             },
-            # {
-            #     '$count': "set_fine_amount"
-            # }
-            # {
-            #     '$group': {
-            #         '_id': '$infraction_description',
-            #         'fine_count': {'$sum': '$set_fine_amount'}
-            #     }
-            # }
-        ])
+        ]
+
+        if searched_data["date"]:
+            filter_statments[0]['$match']['$and'].append(
+                {"date_of_infraction": {"$regex": searched_data['date'], "$options": "i"}}
+            )
+
+        if searched_data["time_from"] and searched_data["time_to"]:
+            filter_statments[0]['$match']['$and'].append({
+                '$or': [
+                    {
+                        'time_of_infraction': {
+                            '$gte': time_from_tmp,
+                            '$lte': time_to_tmp
+                        },
+                    }
+                ]
+            })
+
+        if searched_data["address"]:
+            filter_statments[0]['$match']['$and'].append({
+                "location2": {"$regex": searched_data['address'], "$options": "i"}
+            })
+
+        if searched_data["ticket_type"] and searched_data["ticket_type"] != "":
+            filter_statments[0]['$match']['$and'].append(
+                {'infraction_description': searched_data["ticket_type"]}
+            )
+
+        return DB.DATABASE[collection].aggregate(
+            filter_statments,
+        )

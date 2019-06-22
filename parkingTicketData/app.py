@@ -103,20 +103,18 @@ def architecture():
 def filter_search():
     if request.method != 'GET':
         filter_data = json.loads(request.data)
-        check = 0
+        check = 1
 
-        if filter_data["date"] or filter_data["time_from"] or filter_data["time_to"] or filter_data["address"] or filter_data["ticket_type"]:
-            check = 1
+        if filter_data["date"] or \
+                filter_data["time_from"] or \
+                filter_data["time_to"] or \
+                filter_data["address"] or \
+                filter_data["ticket_type"]:
+
+            check = 0
             filter_results = DB.filter('parking_tickets', filter_data)
 
-            print(list(filter_results))
-
-        if check != 0:
-            print()
-            # filter_results = filter_results.group_by(ParkingTickets.infraction_description).group_by(
-            #     ParkingTickets.location2).all()
-
-        else:
+        if check == 1:
             return json.dumps(data_formatter(get_all_data()))
 
         filtered_json = json_structure_for_filter(filter_results)
