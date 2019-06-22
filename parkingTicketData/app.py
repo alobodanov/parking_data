@@ -69,6 +69,7 @@ def json_structure_for_filter(filtered_data):
     filtered_json = []
 
     for result_json in filtered_data:
+        print(result_json)
         filtered_object = {
             "address": result_json[2],
             "coords": [result_json[3], result_json[4]],
@@ -113,6 +114,8 @@ def filter_search():
 
             check = 0
             filter_results = DB.filter('parking_tickets', filter_data)
+
+            print(filter_results)
 
         if check == 1:
             return json.dumps(data_formatter(get_all_data()))

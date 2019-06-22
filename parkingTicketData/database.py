@@ -15,6 +15,10 @@ class DB(object):
         DB.DATABASE[collection].insert(data)
 
     @staticmethod
+    def insert_parking(collection, data):
+        DB.DATABASE[collection].insert(data)
+
+    @staticmethod
     def find_all(collection):
         return DB.DATABASE[collection].find({})
 
@@ -24,8 +28,6 @@ class DB(object):
 
     @staticmethod
     def filter(collection, searched_data):
-        print('----------------->>>>>>>>>>Filter from DB file<<<<<<<<<<<-------------------')
-
         if searched_data["time_from"].replace(':', '').lstrip('0') == '':
             time_from_tmp = 0
         else:
@@ -46,10 +48,31 @@ class DB(object):
             },
             {
                 '$group': {
-                    '_id': '$infraction_description',
-                    'location2': {'$addToSet':'$location2'}
+                    '_id': {
+                        'location2': '$location2',
+                        'infraction_description': '$infraction_description'
+                    },
                 }
             },
+            # {
+            #     '$group': {
+            #         '_id': '$_id.location2',
+            #         'address': {'$addToSet': '$location2'},
+            #         'coords': {'$addToSet': '$coords'},
+            #         'total_fines': {'$sum': 1},
+            #         'data': {
+            #             '$mergeObjects': {
+            #                 '$infraction_description',
+            #                 '$date_of_infraction',
+            #                 '$set_fine_amount',
+            #                 # 'infraction_description': '$infraction_description',
+            #                 # 'date_of_infraction': '$date_of_infraction',
+            #                 # 'set_fine_amount': '$set_fine_amount',
+            #                 # 'total_fines': {'$sum': 1},
+            #             }
+            #         }
+            #     }
+            # }
         ]
 
         if searched_data["date"]:

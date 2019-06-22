@@ -27,7 +27,7 @@ class Parking(object):
         self.created_at = datetime.datetime.utcnow()
 
     def insert(self):
-        DB.insert(collection='parking_tickets', data=self.json())
+        DB.insert_parking(collection='parking_tickets', data=self.json())
 
     def json(self):
         return {
