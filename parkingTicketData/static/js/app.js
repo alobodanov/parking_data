@@ -24,7 +24,7 @@ function createMap() {
 function createMarkers(response) {
     var map = createMap();
     var popup_stmt = "";
-
+    console.log(response);
     for (data in response){
         popup_stmt = "";
         console.log(response[data])

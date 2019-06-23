@@ -38,10 +38,8 @@ class DB(object):
 
         filter_statments = [
             {
-                '$and': [
-
-                ]
-            },
+                '$and':[]
+                },
             
         ]
 
@@ -72,83 +70,47 @@ class DB(object):
                 {'infraction_description': searched_data["ticket_type"]}
             )
 
-        results = DB.DATABASE[collection].find(
-            filter_statments[0],
-        ).sort(
-            [
-                ("location2", pymongo.ASCENDING),
-                ("infraction_description", pymongo.DESCENDING)
-            ]
-        )
 
-        print(results)
-
-        final_results = []
-        address_data = []
-        address_tmp_data = [results[0]["location2"]]
-        description_tmp_data = [results[0]["infraction_description"]]
-        data = []
-
-        small_object = {
-            "fine_amount": results[0]['set_fine_amount'],
-            "infraction_description": results[0]['infraction_description'],
-            #"date_of_infraction": results[0]['date_of_infraction'],
-            "total_fines": 1
-        }
-
-        big_object = {
-            "address": results[0]["location2"],
-            "coords": results[0]["coords"],
-            "data": data
-        }
-
-        if results.count() > 1:
-
-            for result in results:
-                
-                if result['location2'] in address_tmp_data:
-                    
-                    if result["infraction_description"] in description_tmp_data:
-                        
-                        small_object["total_fines"]+=1
-                    else:
-                        
-                        data.append(small_object)
-                        small_object = {
-                            "fine_amount": result['set_fine_amount'],
-                            "infraction_description": result['infraction_description'],
-
-                            "total_fines": 1
-                        }
-                else:
-                   
-                    data.append(small_object)
-                    big_object["data"] = data
-                    final_results.append(big_object)
-                    data = []
-                    big_object = {
-                        "address": result["location2"],
-                        "coords": result["coords"],
-                        "data": data
-                    }
-                    small_object = {
-                        "fine_amount": result['set_fine_amount'],
-                        "infraction_description": result['infraction_description'],
-
-                        "total_fines": 1
-                    }
-
-                    address_tmp_data.append(result["location2"])
-                    description_tmp_data.append(result["infraction_description"])
-        else:
-            
-            data.append(small_object)
-            big_object["data"] = data
-            final_results.append(big_object)
         
-        if not final_results:
-            data.append(small_object)
-            big_object["data"] = data
-            final_results.append(big_object)
+        results=DB.DATABASE[collection].find(
+            filter_statments[0],
+        ).sort([("location2", pymongo.ASCENDING), ("infraction_description", pymongo.DESCENDING)])
 
-        return final_results
+        final_result = []
+        address_list=[]
+        description_list=[] 
+        i=0
+        
+        for i in range(results.count()):
+            if results[i]['location2'] in address_list:
+                for address in final_result:
+                    if address["address"] == results[i]['location2']:                   
+                        for data in address['data']:
+                            if results[i]['infraction_description'] in description_list and results[i]['infraction_description']==data["infraction_description"]:
+                                data["total_fines"] = data["total_fines"]+1   
+                            elif results[i]['infraction_description'] in description_list:
+                                continue
+                            else:
+                                address['data'].append({
+                                    "fine_amount": results[i]['set_fine_amount'],
+                                    "infraction_description": results[i]['infraction_description'],
+                                    "total_fines":1
+                                })
+                                description_list.append(results[i]['infraction_description'])
+                                break
+                       
+            else:
+                final_result.append({
+                    "address":results[i]["location2"],
+                    "coords":results[i]["coords"],
+                    "data":[{
+                        "fine_amount": results[i]['set_fine_amount'],
+                        "infraction_description": results[i]['infraction_description'],
+                        "total_fines":1
+                        }]
+                })
+                address_list.append(results[i]["location2"])
+                description_list=[]
+                description_list.append(results[i]['infraction_description'])
+
+        return final_result
