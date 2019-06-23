@@ -70,13 +70,13 @@ def json_structure_for_filter(filtered_data):
 
     for result_json in filtered_data:
         filtered_object = {
-            "address": result_json[2],
-            "coords": [result_json[3], result_json[4]],
-            "date_of_infraction": result_json[6],
+            "address": result_json['address'],
+            "coords": result_json['coords'],
+            "date_of_infraction": 'tmp',#result_json[6],
             # "infraction_code": result[4],
-            "infraction_description": result_json[5],
-            "set_fine_amount": result_json[1],
-            "fine_count": result_json[0]
+            "infraction_description": result_json['data'][0]['infraction_description'],
+            "set_fine_amount": result_json['data'][0]['fine_amount'],
+            "fine_count": result_json['data'][0]['total_fines']
             # "time_of_infraction": result_json[6]
         }
         filtered_json.append(filtered_object)
@@ -117,10 +117,10 @@ def filter_search():
         if check == 1:
             return json.dumps(data_formatter(get_all_data()))
 
-        #print(list(filter_results))
+        print(filter_results)
 
         filtered_json = json_structure_for_filter(filter_results)
-        return jsonify(data_formatter(filtered_json))
+        return jsonify(filtered_json)
 
 
 def data_formatter(format_data):

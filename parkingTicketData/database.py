@@ -38,8 +38,10 @@ class DB(object):
 
         filter_statments = [
             {
-                '$and':[]
-                },
+                '$and': [
+
+                ]
+            },
             
         ]
 
@@ -70,30 +72,38 @@ class DB(object):
                 {'infraction_description': searched_data["ticket_type"]}
             )
 
-
-        
-        results=DB.DATABASE[collection].find(
+        results = DB.DATABASE[collection].find(
             filter_statments[0],
-        ).sort([("location2", pymongo.ASCENDING), ("infraction_description", pymongo.DESCENDING)])
+        ).sort(
+            [
+                ("location2", pymongo.ASCENDING),
+                ("infraction_description", pymongo.DESCENDING)
+            ]
+        )
+
+        print(results)
+
         final_results = []
         address_data = []
         address_tmp_data = [results[0]["location2"]]
-        description_tmp_data =[results[0]["infraction_description"]]
-        data=[]
-        small_object={
-                        "fine_amount": results[0]['set_fine_amount'],
-                        "infraction_description": results[0]['infraction_description'],
-                        #"date_of_infraction": results[0]['date_of_infraction'],
-                        "total_fines":1
-                        }
-        big_object={
-                    "address":results[0]["location2"],
-                    "coords":results[0]["coords"],
-                    "data":data
-                }
+        description_tmp_data = [results[0]["infraction_description"]]
+        data = []
 
-        if results.count()>1:
-            
+        small_object = {
+            "fine_amount": results[0]['set_fine_amount'],
+            "infraction_description": results[0]['infraction_description'],
+            #"date_of_infraction": results[0]['date_of_infraction'],
+            "total_fines": 1
+        }
+
+        big_object = {
+            "address": results[0]["location2"],
+            "coords": results[0]["coords"],
+            "data": data
+        }
+
+        if results.count() > 1:
+
             for result in results:
                 
                 if result['location2'] in address_tmp_data:
@@ -104,29 +114,30 @@ class DB(object):
                     else:
                         
                         data.append(small_object)
-                        small_object={
+                        small_object = {
                             "fine_amount": result['set_fine_amount'],
                             "infraction_description": result['infraction_description'],
-                            
-                            "total_fines":1
-                            }
+
+                            "total_fines": 1
+                        }
                 else:
                    
                     data.append(small_object)
                     big_object["data"] = data
                     final_results.append(big_object)
-                    data=[]
-                    big_object={
-                        "address":result["location2"],
-                        "coords":result["coords"],
-                        "data":data
+                    data = []
+                    big_object = {
+                        "address": result["location2"],
+                        "coords": result["coords"],
+                        "data": data
                     }
-                    small_object={
-                            "fine_amount": result['set_fine_amount'],
-                            "infraction_description": result['infraction_description'],
-                            
-                            "total_fines":1
-                            }
+                    small_object = {
+                        "fine_amount": result['set_fine_amount'],
+                        "infraction_description": result['infraction_description'],
+
+                        "total_fines": 1
+                    }
+
                     address_tmp_data.append(result["location2"])
                     description_tmp_data.append(result["infraction_description"])
         else:
@@ -139,7 +150,5 @@ class DB(object):
             data.append(small_object)
             big_object["data"] = data
             final_results.append(big_object)
-        
-        print(final_results)
 
         return final_results

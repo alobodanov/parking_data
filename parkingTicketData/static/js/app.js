@@ -27,6 +27,7 @@ function createMarkers(response) {
 
     for (data in response){
         popup_stmt = "";
+        console.log(response[data])
         marker = L.marker(response[data].coords, {
              title: response[data].address
          })
