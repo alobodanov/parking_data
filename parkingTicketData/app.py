@@ -117,7 +117,7 @@ def filter_search():
         if check == 1:
             return json.dumps(data_formatter(get_all_data()))
 
-        print(list(filter_results))
+        #print(list(filter_results))
 
         filtered_json = json_structure_for_filter(filter_results)
         return jsonify(data_formatter(filtered_json))
