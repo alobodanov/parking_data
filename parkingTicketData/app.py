@@ -119,8 +119,8 @@ def filter_search():
 
         print(filter_results)
 
-        filtered_json = json_structure_for_filter(filter_results)
-        return jsonify(filtered_json)
+        #filtered_json = json_structure_for_filter(filter_results)
+        return jsonify(filter_results)
 
 
 def data_formatter(format_data):
