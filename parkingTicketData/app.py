@@ -11,10 +11,10 @@ import pandas as pd
 from parkingTicketData.database import DB
 from parkingTicketData.models.parking import Parking
 
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
 
 # Read data from CSV file
-csv_tickets_1 = "parkingTicketData/Resources/coords2.csv"
+csv_tickets_1 = "parkingTicketData/Resources/coords1000.csv"
 clean_df = pd.read_csv(csv_tickets_1)
 
 DB.init()
@@ -40,14 +40,12 @@ for i in range(len(clean_df)):
     new_data.insert()
     i = i + 1
 
+results = []
+location_data = []
+
 
 def get_all_data():
     return list(DB.find_all('parking_tickets'))
-
-
-clean_df_tmp = get_all_data()
-results = []
-location_data = []
 
 
 def create_json_structure(results_data):

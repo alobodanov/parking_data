@@ -1,13 +1,27 @@
 import pymongo
+from flask import Flask
+
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_pyfile('config.py')
+
+DATABASE_CONFIG = {
+    'MONGO_HOST': 'ds241097.mlab.com',
+    'MONGO_PORT': 41097,
+    'MONGO_DBNAME': 'heroku_flgb1cjr',
+    'MONGO_USERNAME': 'devUser',
+    'MONGO_PASSWORD': 'z3HzHYmk83g7Lc',
+    'MONGO_AUTH_SOURCE': 'admin'
+}
 
 
 class DB(object):
-    URI = "mongodb://127.0.0.1:27017"
+    DATABASE = None
 
     @staticmethod
     def init():
-        client = pymongo.MongoClient(DB.URI)
-        DB.DATABASE = client['parking_db']
+        client = pymongo.MongoClient(DATABASE_CONFIG['MONGO_HOST'], DATABASE_CONFIG['MONGO_PORT'])
+        DB.DATABASE = client[DATABASE_CONFIG['MONGO_DBNAME']]
+        DB.DATABASE.authenticate(DATABASE_CONFIG['MONGO_USERNAME'], DATABASE_CONFIG['MONGO_PASSWORD'])
         DB.DATABASE.parking_tickets.drop()
 
     @staticmethod
