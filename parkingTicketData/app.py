@@ -89,9 +89,13 @@ def home():
     return render_template("index.html", seldesc=Markup(list(clean_df['infraction_description'].unique())))
 
 
-@app.route("/api/get/data", methods=['GET'])
-def get_data():
-    return jsonify(results)
+# @app.route("/api/get/data", methods=['GET'])
+# def get_data():
+#     return jsonify(results)
+
+@app.route("/api/prediction")
+def prediction():
+    return render_template("prediction.html")
 
 
 @app.route("/api/architecture", methods=['GET'])
@@ -116,8 +120,6 @@ def filter_search():
 
         if check == 1:
             return json.dumps(data_formatter(get_all_data()))
-
-        print(filter_results)
 
         #filtered_json = json_structure_for_filter(filter_results)
         return jsonify(filter_results)

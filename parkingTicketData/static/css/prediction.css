@@ -51,24 +51,26 @@ html {
     margin-top: 30px;
 }
 .form {
-    width: 300px;
+        width: 100%;
     padding: 12px;
-    margin-top: 11px;
-    height: 265px;
-    margin-right: 10px;
-    background: red;
-    float: right !important;
+    /* margin-top: 11px; */
+    display: -webkit-box;
+    height: 55px;
+    /* margin: 0 auto; */
+    /* margin-right: 10px; */
+    /* background: red; */
+    /* float: right !important; */
     margin-right: 100p%;
     background: rgba(171, 205, 239, 0.5);
-    border-radius: 5px;
+    /* border-radius: 5px; */
 }
 .controls {
-    z-index: 999;
+    /*z-index: 999; */
     width: 100%;
-    position: absolute;
-    width: 319px;
-    right: 0;
-    margin-left: 100px;
+    /* position: absolute; */
+    /* width: 319px; */
+    /* right: 0; */
+    /* margin-left: 100px; */
 }
 
 .my-plot-style {
@@ -101,4 +103,14 @@ select, button {
 
 #errorFromTo {
     display: none;
+}
+
+h1 {
+    color: #fff;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 50px;
+    margin-top: 50px;
 }

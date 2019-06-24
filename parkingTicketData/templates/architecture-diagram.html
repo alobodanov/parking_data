@@ -3,7 +3,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Parking Data</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-142369838-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-142369838-1');
+
+    </script>
+
+    <title>Parking Data - Architecture</title>
     <meta charset="utf-8"/>
 
     <!-- CSS -->
@@ -13,21 +24,29 @@
 <body class="architecture-body">
 <!-- The div where we will inject our map -->
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark nav-style">
-    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="logo" style="width:40px;">
+    <a href="/">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="logo" style="width:40px;">
+    </a>
     <ul class="navbar-nav nav-bar">
         <li class="nav-item">
             <a class="nav-link" href="/">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/api/get/data">Data</a>
+            <a class="nav-link" href="/api/prediction">Prediction</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="architecture-diagram">Architecture</a>
+            <a class="nav-link" href="/api/architecture">Architecture</a>
         </li>
     </ul>
 </nav>
 <div class="mxgraph architectureStyle" style="max-width:100%;border:1px solid transparent;margin: 0 auto !important;"
-     data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile modified=\&quot;2019-06-17T14:36:14.379Z\&quot; host=\&quot;www.draw.io\&quot; agent=\&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36\&quot; etag=\&quot;ZvoYgIACme_qlWhenKVB\&quot; version=\&quot;10.7.7\&quot; type=\&quot;google\&quot;&gt;&lt;diagram id=\&quot;Sy26PR866zBFFgM6cYFf\&quot; name=\&quot;Page-1\&quot;&gt;5Vrbbts4EP0aP8qQqPtjbm6B3QLpBotsnwJaoiWisiiQdOz065eUKFkilVht5SRIEyAOh/dzDoczTBbu1fbwicIq/0JSVCyAnR4W7vUCAMexffEhLU+NJfTCxpBRnKpGR8Md/oGU0VbWHU4RGzTkhBQcV0NjQsoSJXxgg5SS/bDZhhTDWSuYIcNwl8DCtN7jlOeNNfLto/0zwlnOuw2rmi1sGysDy2FK9j2Te7NwryghvPlte7hChQSvxaXpt3qmtlsYRSWf0gF8vQqiH2VGD/nn2Mv+/Su+dyw1yiMsdmrDarH8qUWAkl2ZIjmIs3Av9znm6K6CiazdC86FLefbQlWr4RDl6PDsOp1u90I2iGwRp0+iiergRgowpRgQqvL+iL/Tgpr3sW87QsV51o19hEX8opD5GZS80zBVBJcc0ZtHsU2m0Ogot0UhhSyvYbSHkDFOyXd0RQpChaUkpRjwcoOLojUtgOvb8lvYC7hGxS1hmGNSiroEyUlFhYQcC9n+rTVYE87JttfgosCZrOBEUkd2vMClmL09PXISqJp0g4t9VHKb20MmT/mSbDY4QUuGqBiVqc+HDJWI4mQeFXi2poLYVEE0JgLvXCIA7++oBDpI0dSj4p4LJff9oaQ7lMn+5GwgTXAnrw2SE7w7KfmnUWodE97W13gfk3F/d9JN1g72Eibfs5qBng/e1F+iST3ZBat6DrMtbPBBcnap1nOdcy7jlAsJBFglaekusYhUNlhwS5eJmBGsUsih+JB2JhvB1JKmNWTIqihigkAoV2kxUYKpuEQQtx7FfIRa4pqQfmnlO/KnE1sOiJZVmc1xauJgIIgYmP43MuXQ2mZXQ3BaDSPsP8uzccdNIH5cUs393QaHwLjRxQi2Hdkr27zWu5GfDxT0qxcTFtYaYstaOPPcI8AdcO065uEPvRGy4zORHX7Ao++dPPo5KioLlqnFdlVFKJcecBUI3FcUyTIus64KlxtCt41jWO+YiOEYs/ZoLROSGb2AEzmaMrxJYdjZQvH4j1RGQTLCammsqfjJOpcPgvDh9onnpHyQbWZk3nM0nwDCpW9w7494hdY2fxo2IVtFZXoh037p2gvIWJ2P9BSADpj/JxkSm2lK33o11wdFXl14agulWH2vkyx+69cdu9Wltl+zOJQaLwwaB2IDZEcTdDqs5pBmiL8E0TinfcZGTmtro6gQHuVxuNwxGtUMtzLnPUrGd7UY0te8QLNN1av/VKEPpD8B2NpADQ7GQLWqum3/htAm5HqjQmNiYXyS/pye+o5aPKE/y17aYCjBpby7X5ZhXboVqbmARYY6c2uzfZY7pU3wptoMh5Ly9bRlqjYDMBzI06+6c2tzQob9q9rs/NxQYv5sfu59+y8QaVde8Isacf3w5YHOrREzdb5WKaWhFREh8J98kFQmI4XSo6stTlM5zejzxfGB4yih30ti3Hh4abRs9sTjjYgHnCtUdcws5r4J0D8uCU6skxC+MQlmwnAn3CNuY+SPSILfnv8udI8NEsLXJAGYgfs/KEH4cRoNM0Diai/lbmDmscEIJGd73Gxv7T9JlyDWU8rojXVpxlKvrEtff3kLzBz7dXVp/m3ilSHxfC35a+mfHxL5stb9/b0Jvo7/xeDe/A8=&lt;/diagram&gt;&lt;/mxfile&gt;&quot;}"></div>
+     data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile modified=\&quot;2019-06-19T21:10:02.466Z\&quot; host=\&quot;www.draw.io\&quot; agent=\&quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36\&quot; etag=\&quot;LuXioGsxmHFbL5s--wOd\&quot; version=\&quot;10.7.9\&quot; type=\&quot;google\&quot;&gt;&lt;diagram id=\&quot;Sy26PR866zBFFgM6cYFf\&quot; name=\&quot;Page-1\&quot;&gt;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&lt;/diagram&gt;&lt;/mxfile&gt;&quot;}"></div>
 <script type="text/javascript" src="https://www.draw.io/js/viewer.min.js"></script>
+<footer class="footer">
+    <a href="https://github.com/alobodanov/parking_data">
+        <img src="{{ url_for('static', filename='img/GitHub-Mark-Light-64px.png') }}" alt="logo"
+             style="width:40px;">
+    </a>
+</footer>
 </body>
 </html>

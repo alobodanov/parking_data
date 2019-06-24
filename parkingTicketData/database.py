@@ -24,7 +24,6 @@ class DB(object):
 
     @staticmethod
     def filter(collection, searched_data):
-        print('----------------->>>>>>>>>>Filter from DB file<<<<<<<<<<<-------------------')
 
         if searched_data["time_from"].replace(':', '').lstrip('0') == '':
             time_from_tmp = 0
@@ -38,9 +37,10 @@ class DB(object):
 
         filter_statments = [
             {
-                '$and':[]
-                },
-            
+                '$and': [
+
+                ]
+            },
         ]
 
         if searched_data["date"]:
@@ -70,8 +70,6 @@ class DB(object):
                 {'infraction_description': searched_data["ticket_type"]}
             )
 
-
-        
         results=DB.DATABASE[collection].find(
             filter_statments[0],
         ).sort([("location2", pymongo.ASCENDING), ("infraction_description", pymongo.DESCENDING)])
@@ -79,7 +77,7 @@ class DB(object):
         final_result = []
         address_list=[]
         description_list=[] 
-        i=0
+        i = 0
         
         for i in range(results.count()):
             if results[i]['location2'] in address_list:
@@ -109,8 +107,9 @@ class DB(object):
                         "total_fines":1
                         }]
                 })
+
                 address_list.append(results[i]["location2"])
-                description_list=[]
+                description_list = []
                 description_list.append(results[i]['infraction_description'])
 
         return final_result
