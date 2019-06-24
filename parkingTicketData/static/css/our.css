@@ -102,3 +102,9 @@ select, button {
 #errorFromTo {
     display: none;
 }
+
+.beta-tag {
+    right: 0;
+    position: absolute;
+    top: 0;
+}
