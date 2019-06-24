@@ -89,8 +89,8 @@ class DB(object):
         ).sort([("location2", pymongo.ASCENDING), ("infraction_description", pymongo.DESCENDING)])
 
         final_result = []
-        address_list=[]
-        description_list=[] 
+        address_list = []
+        description_list = []
         i = 0
         
         for i in range(results.count()):
@@ -113,13 +113,13 @@ class DB(object):
                        
             else:
                 final_result.append({
-                    "address":results[i]["location2"],
-                    "coords":results[i]["coords"],
-                    "data":[{
+                    "address": results[i]["location2"],
+                    "coords": results[i]["coords"],
+                    "data": [{
                         "fine_amount": results[i]['set_fine_amount'],
                         "infraction_description": results[i]['infraction_description'],
                         "total_fines":1
-                        }]
+                    }]
                 })
 
                 address_list.append(results[i]["location2"])

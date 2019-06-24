@@ -14,7 +14,7 @@ from parkingTicketData.models.parking import Parking
 app = Flask(__name__, instance_relative_config=True)
 
 # Read data from CSV file
-csv_tickets_1 = "parkingTicketData/Resources/coords1000.csv"
+csv_tickets_1 = "parkingTicketData/Resources/coord500.csv"
 clean_df = pd.read_csv(csv_tickets_1)
 
 DB.init()
