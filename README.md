@@ -1,4 +1,4 @@
-# parking_data
+# Parking Data Analysis and Parkng Strategy
 
 https://parking-tickets.herokuapp.com/
 
