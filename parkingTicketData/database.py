@@ -38,17 +38,6 @@ class DB(object):
 
     @staticmethod
     def filter(collection, searched_data):
-
-        if searched_data["time_from"].replace(':', '').lstrip('0') == '':
-            time_from_tmp = 0
-        else:
-            time_from_tmp = int(searched_data["time_from"].replace(':', '').lstrip('0'))
-
-        if searched_data["time_to"].replace(':', '').lstrip('0') == '':
-            time_to_tmp = 0
-        else:
-            time_to_tmp = int(searched_data["time_to"].replace(':', '').lstrip('0'))
-
         filter_statments = [
             {
                 '$and': [
@@ -67,8 +56,10 @@ class DB(object):
                 '$or': [
                     {
                         'time_of_infraction': {
-                            '$gte': time_from_tmp,
-                            '$lte': time_to_tmp
+                            '$gte': 0 if searched_data["time_from"].replace(':', '').lstrip('0') == ''
+                                        else int(searched_data["time_from"].replace(':', '').lstrip('0')),
+                            '$lte': 0 if searched_data["time_to"].replace(':', '').lstrip('0') == ''
+                                        else int(searched_data["time_to"].replace(':', '').lstrip('0'))
                         },
                     }
                 ]
@@ -86,19 +77,25 @@ class DB(object):
 
         results=DB.DATABASE[collection].find(
             filter_statments[0],
-        ).sort([("location2", pymongo.ASCENDING), ("infraction_description", pymongo.DESCENDING)])
+        ).sort([
+            ("location2", pymongo.ASCENDING),
+            ("infraction_description", pymongo.DESCENDING)
+        ])
 
         final_result = []
         address_list = []
         description_list = []
-        i = 0
+        # i = 0
         
         for i in range(results.count()):
             if results[i]['location2'] in address_list:
                 for address in final_result:
                     if address["address"] == results[i]['location2']:                   
                         for data in address['data']:
-                            if results[i]['infraction_description'] in description_list and results[i]['infraction_description']==data["infraction_description"]:
+                            if results[i]['infraction_description'] \
+                                    in description_list \
+                                    and results[i]['infraction_description' ]== data["infraction_description"]:
+
                                 data["total_fines"] = data["total_fines"]+1   
                             elif results[i]['infraction_description'] in description_list:
                                 continue

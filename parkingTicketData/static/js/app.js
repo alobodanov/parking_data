@@ -8,7 +8,7 @@ function createMap() {
     document.getElementById('parent').innerHTML = "<div id='map'> <div id='plot' class='my-plot-style'></div>";
 
     return L.map("map", {
-          center: [43.6532, -79.3832],
+          center: [43.6741069, -79.3283773],
           zoom: 12,
           layers: [
               L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {

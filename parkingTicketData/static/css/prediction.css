@@ -34,6 +34,9 @@ html {
 .nav-bar {
     padding-left: 24px;
 }
+li {
+    text-align: center;
+}
 .footer {
   background-color: #000 !important;
   height: 54px;
@@ -42,7 +45,9 @@ html {
   display: table;
   padding-top: 8px;
   width: 100%;
-  padding-left: 47%
+  padding-left: 47%;
+  bottom: 0;
+  position: absolute;
 }
 .footer .container {
     text-align: -webkit-center;
@@ -113,4 +118,14 @@ h1 {
     text-align: center;
     margin-bottom: 50px;
     margin-top: 50px;
+}
+
+.beta-tag {
+    right: 0;
+    position: absolute;
+    top: 0;
+}
+
+.toggleButton-menu {
+    margin-right: 29px;
 }
