@@ -217,3 +217,7 @@ article a:hover {
 #plotChart {
     margin-left: 100px;
 }
+
+.address-list {
+    display: contents;
+}

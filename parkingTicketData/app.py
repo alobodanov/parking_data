@@ -165,20 +165,34 @@ def page_not_found(e):
     return resp
 
 
-@app.route("/api/prediction/location")
-def location_data():
-    data = [
-        {
-            'x': [],
-            'y': []
-        },
-        {
-            'x': [],
-            'y': []
-        }
-    ]
+@app.route("/api/prediction/location", methods=['GET', 'POST'])
+def get_address_data():
+    print(request.method)
+    if request.method != 'GET':
+        data = [
+            {
+                'x': [],
+                'y': []
+            },
+            {
+                'x': [],
+                'y': []
+            }
+        ]
+        filter_data = json.loads(request.data)
 
-    return jsonify(data)
+        with open('parkingTicketData/Resources/ai_data/locations/'+filter_data['address']+'.csv') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+
+            for row in csv_reader:
+                print(row)
+                data[0]['x'].append(row[0])
+                data[0]['y'].append(row[1])
+                if row[2]:
+                    data[1]['x'].append(row[0])
+                    data[1]['y'].append(row[2])
+
+        return jsonify(data)
 
 
 @app.route("/api/prediction/fee", methods=['GET'])
