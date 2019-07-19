@@ -188,6 +188,11 @@ function hPlot(response){
             t: 70,
             pad: 10
         },
+        xaxis: {
+            tickmode: "array", // If "array", the placement of the ticks is set via `tickvals` and the tick text is `ticktext`.
+            tickvals: [0, 12000, 24000, 36000, 48000],
+            ticktext: ['0', '78', '155', '188', '220']
+          },
         paper_bgcolor:'rgba(171, 205, 239, 0.8)',
         plot_bgcolor:'rgba(171, 205, 239, 0.8)'
     };
