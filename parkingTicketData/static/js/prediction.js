@@ -1,4 +1,4 @@
-var height = 750;
+var height = 720;
 var width = 1050;
 
 function getFilteredData(chartTypeData) {
@@ -6,6 +6,7 @@ function getFilteredData(chartTypeData) {
     if (chartTypeData == 'location'){
         getAddressData('20_edward');
     } else {
+        var menu = document.getElementsByClassName("address-list")[0].style.display = 'none';
         var url = "/api/prediction/"+chartTypeData;
         d3.json(url, {
         method:"GET",
@@ -62,7 +63,7 @@ function getAddressData(address){
         },
         body: JSON.stringify({'address':address})
     }).then(function(response) {
-        console.log(response)
+        var menu = document.getElementsByClassName("address-list")[0].style.display = 'contents';
         var title_name = 'Location';
 
         var layout = {
