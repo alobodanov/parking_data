@@ -10,6 +10,7 @@ import json
 import pandas as pd
 from parkingTicketData.database import DB
 from parkingTicketData.models.parking import Parking
+import csv
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -162,6 +163,76 @@ def page_not_found(e):
     resp.status_code = 404
 
     return resp
+
+
+@app.route("/api/prediction/location")
+def location_data():
+    data = [
+        {
+            'x': [],
+            'y': []
+        },
+        {
+            'x': [],
+            'y': []
+        }
+    ]
+
+    return jsonify(data)
+
+
+@app.route("/api/prediction/fee", methods=['GET'])
+def fee_data():
+    data = [
+        {
+            'x': [],
+            'y': []
+        },
+        {
+            'x': [],
+            'y': []
+        }
+    ]
+
+    with open('parkingTicketData/Resources/ai_data/fee/fine_sum_predictions.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+
+        for row in csv_reader:
+            print(row)
+            data[0]['x'].append(row[0])
+            data[0]['y'].append(row[1])
+            if row[2]:
+                data[1]['x'].append(row[0])
+                data[1]['y'].append(row[2])
+
+    return jsonify(data)
+
+
+@app.route("/api/prediction/fine_count", methods=['GET'])
+def fine_count_data():
+    data = [
+        {
+            'x': [],
+            'y': []
+        },
+        {
+            'x': [],
+            'y': []
+        }
+    ]
+
+    with open('parkingTicketData/Resources/ai_data/fine_count/fine_count_predictions.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+
+        for row in csv_reader:
+            print(row)
+            data[0]['x'].append(row[0])
+            data[0]['y'].append(row[1])
+            if row[2]:
+                data[1]['x'].append(row[0])
+                data[1]['y'].append(row[2])
+
+    return jsonify(data)
 
 
 if __name__ == "__main__":

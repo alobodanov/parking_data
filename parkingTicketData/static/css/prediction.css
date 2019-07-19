@@ -70,22 +70,21 @@ li {
     /* border-radius: 5px; */
 }
 .controls {
-    /*z-index: 999; */
+    background: blue;
+    /* color: black; */
+    height: 100%;
     width: 100%;
-    /* position: absolute; */
-    /* width: 319px; */
-    /* right: 0; */
-    /* margin-left: 100px; */
 }
 
 .my-plot-style {
-    position: absolute;
-    /* top: 80px; */
+        position: absolute;
+    /* top: 40px; */
     z-index: 999;
-    bottom: 80px;
+    /* bottom: 80px; */
     /* left: 43px; */
-    right: 10px;
+        left: 222px;
     height: 300px;
+    width: 100px;
 }
 
 input[type='text'] {
@@ -128,4 +127,93 @@ h1 {
 
 .toggleButton-menu {
     margin-right: 29px;
+}
+
+.sidenav {
+  height: 100%;
+    width: 221px;
+    position: fixed;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 45px;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  background-color: #555;
+  color: white;
+}
+
+.main {
+  margin-left: 160px; /* Same as the width of the sidenav */
+  font-size: 28px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+button {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 18px !important;
+    color: #818181;
+    display: block;
+    background: none;
+    border: none;
+}
+
+
+.container {
+  display: table;
+  width: 100%;
+}
+
+.left-half {
+  position: absolute;
+  left: 0px;
+  width: 20%;
+  height: 90%;
+  background-color: #111;
+  padding-top: 45px;
+}
+
+.right-half {
+  position: absolute;
+  right: 0px;
+  width: 80%;
+  height: 90%;
+}
+
+article {
+    display: grid !important;
+    padding: 20px;
+    font-size: 15pt;
+}
+
+article a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #818181;
+  display: block;
+}
+
+article a:hover {
+  background-color: #555;
+  color: white;
+}
+
+#plotChart {
+    margin-left: 100px;
 }
