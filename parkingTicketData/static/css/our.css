@@ -24,7 +24,7 @@ html {
   z-index: 2;
 }
 #parent {
-  height: 88.2%;
+  height: 87%;
   width: 100%;
   z-index: 1;
 }
@@ -47,7 +47,7 @@ li {
   width: 100%;
   padding-left: 47%;
   bottom: 0;
-  position: absolute;
+  position: relative;
 }
 .footer .container {
     text-align: -webkit-center;

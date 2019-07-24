@@ -1,5 +1,5 @@
-var height = 720;
-var width = 1050;
+var height = 520;
+var width = 750;
 
 function getFilteredData(chartTypeData) {
 
@@ -30,7 +30,7 @@ function getFilteredData(chartTypeData) {
                 hovermode:'closest',
                 title: title_name,
                 height: height,
-                width: width
+                width: width,
             };
 
             var data = [

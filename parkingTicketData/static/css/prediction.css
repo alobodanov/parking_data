@@ -188,6 +188,12 @@ button {
   padding-top: 45px;
 }
 
+.left-half article p {
+    font-size: 16pt;
+    color: #fff;
+    padding-left: 16px;
+}
+
 .right-half {
   position: absolute;
   right: 0px;
@@ -198,6 +204,7 @@ button {
 article {
     display: grid !important;
     padding: 20px;
+    padding-left: 45px;
     font-size: 15pt;
 }
 

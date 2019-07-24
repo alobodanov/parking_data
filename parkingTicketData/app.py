@@ -167,7 +167,6 @@ def page_not_found(e):
 
 @app.route("/api/prediction/location", methods=['GET', 'POST'])
 def get_address_data():
-    print(request.method)
     if request.method != 'GET':
         data = [
             {
@@ -185,7 +184,6 @@ def get_address_data():
             csv_reader = csv.reader(csv_file, delimiter=',')
 
             for row in csv_reader:
-                print(row)
                 data[0]['x'].append(row[0])
                 data[0]['y'].append(row[1])
                 if row[2]:
@@ -212,7 +210,6 @@ def fee_data():
         csv_reader = csv.reader(csv_file, delimiter=',')
 
         for row in csv_reader:
-            print(row)
             data[0]['x'].append(row[0])
             data[0]['y'].append(row[1])
             if row[2]:
@@ -239,7 +236,6 @@ def fine_count_data():
         csv_reader = csv.reader(csv_file, delimiter=',')
 
         for row in csv_reader:
-            print(row)
             data[0]['x'].append(row[0])
             data[0]['y'].append(row[1])
             if row[2]:
