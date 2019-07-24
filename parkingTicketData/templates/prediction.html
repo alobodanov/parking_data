@@ -69,16 +69,18 @@
   </div>
   <div class="right-half">
     <article>
-        <div class="address-list">
-            <span onclick="getAddressData('20_edward')">20 Edward</span>
-            <span onclick="getAddressData('24_bellar')">24 Bellar</span>
-            <span onclick="getAddressData('33_elmhurst')">33 Elmhurst</span>
-            <span onclick="getAddressData('40_orchard')">40 Orchard</span>
-            <span onclick="getAddressData('74_victoria')">74 Victoria</span>
-            <span onclick="getAddressData('125_village_green_sq')">125 Village Green Sq</span>
-            <span onclick="getAddressData('150_gerrard_west')">150 Gerrard West</span>
-            <span onclick="getAddressData('200_king_east')">200 King East</span>
-            <span onclick="getAddressData('2075_bayview')">2075 Bayview</span>
+        <div class="address-list" >
+            <form action="">
+                <input type="radio" name="gender" value="20_edward" onclick="getAddressData('20_edward')"> 20 Edward<br>
+                <input type="radio" name="gender" value="24_bellar" onclick="getAddressData('24_bellar')"> 24 Bellar<br>
+                <input type="radio" name="gender" value="33_elmhurst" onclick="getAddressData('33_elmhurst')"> 33 Elmhurst<br>
+                <input type="radio" name="gender" value="40_orchard" onclick="getAddressData('40_orchard')"> 40 Orchard<br>
+                <input type="radio" name="gender" value="74_victoria" onclick="getAddressData('74_victoria')"> 74 Victoria<br>
+                <input type="radio" name="gender" value="125_village_green_sq" onclick="getAddressData('125_village_green_sq')"> 125 Village Green Sq<br>
+                <input type="radio" name="gender" value="150_gerrard_west" onclick="getAddressData('150_gerrard_west')"> 150 Gerrard West<br>
+                <input type="radio" name="gender" value="200_king_east" onclick="getAddressData('200_king_east')"> 200 King East<br>
+                <input type="radio" name="gender" value="2075_bayview" onclick="getAddressData('2075_bayview')"> 2075 Bayview
+              </form>
         </div>
       <div id="plotChart" class="my-plot-style"></div>
     </article>

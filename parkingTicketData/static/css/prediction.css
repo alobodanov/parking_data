@@ -220,4 +220,11 @@ article a:hover {
 
 .address-list {
     display: contents;
+    
+}
+.address-list input {
+  width:30px;
+  font-size: 11pt;
+  cursor: pointer
+
 }
